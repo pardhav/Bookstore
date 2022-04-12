@@ -1,5 +1,17 @@
 import { useGlobalContext } from "@/context";
-import { Button, Flex, Heading, Stack } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import React from "react";
 
 interface IHeader {
@@ -8,51 +20,44 @@ interface IHeader {
 function Header(props: any) {
   const context = useGlobalContext();
   console.log(context);
-  return (
+  return (  
     <Flex
       as="nav"
       align="center"
       justify="space-between"
-      wrap="wrap"
-      pt={2}
-      pb={2}
+      alignItems="flex-start"
+      pt={3}
+      pb={3}
       pl={8}
       pr={8}
-      bg="teal.500"
-      color="white"
+      boxShadow="md"
       {...props}
     >
-      <Flex align="center" mr={5} flex="1">
-        <Heading as="h1" size="lg" letterSpacing={"tighter"}>
+      <Flex align="center" mr={5}>
+        <Heading
+          as="h1"
+          size="lg"
+          letterSpacing={"tighter"}
+          fontWeight="normal"
+        >
           Book Store
         </Heading>
       </Flex>
+      <Box maxW="lg" justifyContent="center" flex="1">
+        <InputGroup>
+          <InputLeftElement pointerEvents="none" color="gray.300">
+            <SearchIcon />
+          </InputLeftElement>
+          <Input variant="filled" placeholder="Search the store" maxW="lg" />
+        </InputGroup>
+      </Box>
+
       <Stack
         direction={{ base: "column", md: "row" }}
-        width={{ base: "full", md: "auto" }}
-        alignItems="center"
-        flexGrow={1}
-        mt={{ base: 4, md: 0 }}
         justifyContent="end"
       >
-        <Button
-          variant="outline"
-          _hover={{ bg: "teal.700", borderColor: "teal.700" }}
-        >
-          Create account
-        </Button>{" "}
-        <Button
-          variant="outline"
-          _hover={{ bg: "teal.700", borderColor: "teal.700" }}
-        >
-          Create account
-        </Button>{" "}
-        <Button
-          variant="outline"
-          _hover={{ bg: "teal.700", borderColor: "teal.700" }}
-        >
-          Create account
-        </Button>
+        <Text>Header Buffer:{ String(context.state.showHeader)}</Text>
+        <Button variant="outline">Create account</Button>
       </Stack>
     </Flex>
   );

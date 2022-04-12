@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import * as firebase from "firebase/app";
 import "firebase/auth";
 import { getAuth } from "firebase/auth";
 import "firebase/firestore";
@@ -11,8 +11,10 @@ const clientCredentials = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
-
+console.log(clientCredentials);
 const app = firebase.initializeApp(clientCredentials);
 
-const auth = getAuth(app);
+export const auth = getAuth(app);
+
 export default firebase;
+// export {auth as firebaseAuth}
