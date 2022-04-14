@@ -10,7 +10,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import Layout from "components/layout";
+import {Layout} from "@/components";
 import { useFormik } from "formik";
 import { createUserWithEmail } from "@/modules";
 import React from "react";
@@ -63,7 +63,7 @@ function SignUp() {
   });
 
   return (
-    <Layout title="NECT - SignUp">
+    <Layout title="NECT - SignUp" hideHeader>
       <Center boxShadow="md" w="100vw" h="100vh" m="auto">
         <Box w="800px" boxShadow="md" p="8" borderRadius="10">
           <Box mb="6">
@@ -216,3 +216,4 @@ function SignUp() {
 }
 
 export default SignUp;
+export * from './ValidationSchema'

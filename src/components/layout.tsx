@@ -6,12 +6,13 @@ import Header from "./header";
 interface ILayoutProps {
   children?: React.ReactNode;
   title?: string;
+  hideHeader?: boolean;
 }
 function Layout(props: ILayoutProps) {
   return (
     <>
       <Head>{props.title && <title>{props.title}</title>}</Head>
-      <Header />
+      {props.hideHeader ?? <Header />}
       <Box>{props.children}</Box>
     </>
   );

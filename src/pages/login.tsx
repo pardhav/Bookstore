@@ -17,8 +17,14 @@ import {
 } from "@chakra-ui/react";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
 import GlobalContext from "../context";
-import { signInWithEmail } from "modules/firebase/firebaseAuth";
+import { signInWithEmail } from "@/modules";
 
+// TODO: Add validations for email and password
+// TODO: Add formik
+// TODO: error check for while signin
+// TODO: navigate to home on suceesful login
+// TODO: link to navigate to signup
+// TODO: add loading state to button
 function Login() {
   const context = React.useContext(GlobalContext);
   const [showPassword, setShowPassword] = React.useState(false);
@@ -37,7 +43,7 @@ function Login() {
     }
   };
   return (
-    <Layout>
+    <Layout hideHeader title="NECT - Login">
       <Center h="100vh">
         <Stack
           flexDir="column"
