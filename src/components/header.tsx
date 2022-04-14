@@ -1,18 +1,23 @@
 import { useGlobalContext } from "@/context";
-import { SearchIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Center,
   Flex,
   Heading,
   Input,
   InputGroup,
   InputLeftElement,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
   Stack,
-  Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { BsCart3, BsInfoCircle } from "react-icons/bs";
+import { FiBox } from "react-icons/fi";
 
 interface IHeader {
   hideActions: boolean;
@@ -55,8 +60,18 @@ function Header(props: any) {
         </Box>
 
         <Stack direction={{ base: "column", md: "row" }} justifyContent="end">
-          <Text>Header Buffer:{String(context.state.showHeader)}</Text>
-          <Button variant="outline">Create account</Button>
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              Options
+            </MenuButton>
+            <MenuList>
+              <MenuItem icon={<BsCart3 />}>Cart</MenuItem>
+              <MenuItem icon={<FiBox />}>Orders</MenuItem>
+              <MenuItem icon={<BsInfoCircle />}>About</MenuItem>
+              <MenuDivider />
+              <MenuItem>Sign Out</MenuItem>
+            </MenuList>
+          </Menu>
         </Stack>
       </Flex>
     </Box>
