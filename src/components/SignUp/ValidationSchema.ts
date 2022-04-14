@@ -9,8 +9,8 @@ const SignupSchema = Yup.object().shape({
   email: Yup.string().required("Email is Required").email("Invalid email"),
   password: Yup.string()
     .min(8, "Must be at least 8 charecters")
-    .required("Password is Required")
-    .matches(/^[aA-zZ\s]+$/, "Password can contain only alphabets or numbers"),
+    .max(16, "Must be less than 16 charecters")
+    .required("Password is Required"),
   "tel-national": Yup.number().required("Mobile Number is required").positive(),
 });
 

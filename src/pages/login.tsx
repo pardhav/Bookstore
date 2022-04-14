@@ -4,9 +4,12 @@ import {
   Box,
   Button,
   Center,
+  Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
+  FormLabel,
   Heading,
   Input,
   InputGroup,
@@ -14,51 +17,61 @@ import {
   InputRightElement,
   Link,
   Stack,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
 import GlobalContext from "../context";
 import { signInWithEmail } from "@/modules";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 
-// TODO: Add validations for email and password
-// TODO: Add formik
-// TODO: error check for while signin
 // TODO: navigate to home on suceesful login
-// TODO: link to navigate to signup
-// TODO: add loading state to button
+
+
 //"nect7479@gmail.com", "Marvel@3000"
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().required("Email is required").email("Invalid Email"),
+  password: Yup.string()
+    .min(8, "Must be at least 8 charecters")
+    .max(16, "Must be less than 16 charecters")
+    .required("Password is Required"),
+});
 function Login() {
   const context = React.useContext(GlobalContext);
+  const toast = useToast();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  // React.useState(() => {
-  //   console.log(context);
-  // });
+  const [submitting, setSubmitting] = React.useState(false);
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
+    validationSchema: LoginSchema,
     onSubmit: async (values, actions) => {
       try {
         actions.setSubmitting(true);
+        setSubmitting(true);
         const user = await signInWithEmail(values.email, values.password);
         if (user && context.state) {
           context.state?.toggleHeader();
         }
-      } catch (error) {
-        
+      } catch (error: any) {
+        toast({
+          status: "error",
+          position: "top",
+          title: "Unknown Error Occurred!",
+          description: error?.message,
+        });
       } finally {
         actions.setSubmitting(false);
+        setSubmitting(false);
       }
-      
     },
   });
   const handleShowClick = () => setShowPassword(!showPassword);
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
-    event.preventDefault();
-  };
+
   return (
     <Layout hideHeader title="NECT - Login">
       <Center h="100vh">
@@ -67,37 +80,78 @@ function Login() {
           mb="2"
           justifyContent="center"
           alignItems="center"
-          borderRadius={12}
+          borderRadius={10}
           p={8}
           boxShadow="md"
         >
-          <Box
-            minW={{ base: "90%", md: "468px" }}
-            borderRadius={10}
-            border={1}
-            backgroundColor="whiteAlpha.900"
-            p={8}
-          >
-            <Heading color="teal.400">Login</Heading>
+          <Box minW={{ base: "90%", md: "468px" }}>
+            <Box pb="5">
+              <Text
+                fontFamily="Poppins, sans-serif"
+                fontSize="3xl"
+                fontWeight="medium"
+              >
+                Login
+              </Text>
+              <Text
+                fontFamily="Poppins, sans-serif"
+                fontSize="md"
+                color="gray.500"
+              >
+                Login to explore, shop from millions of books.
+              </Text>
+            </Box>
 
-            <form onSubmit={onSubmit}>
+            <form onSubmit={formik.handleSubmit}>
               <Stack spacing={4} p="1rem" backgroundColor="whiteAlpha.900">
-                <FormControl>
+                <FormControl
+                  isRequired
+                  isInvalid={
+                    formik.errors["email"] !== undefined &&
+                    formik.errors["email"] !== null &&
+                    formik.errors["email"] !== "" &&
+                    formik.touched.email
+                  }
+                >
+                  <FormLabel htmlFor="email">Email</FormLabel>
+
                   <InputGroup>
                     <InputLeftElement pointerEvents="none" color="gray.300">
                       <EmailIcon />
                     </InputLeftElement>
-                    <Input type="email" placeholder="Enter your Email" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="example@mail.com"
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
                   </InputGroup>
+                  <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
                 </FormControl>
-                <FormControl>
+                <FormControl
+                  isRequired
+                  isInvalid={
+                    formik.errors["password"] !== undefined &&
+                    formik.errors["password"] !== null &&
+                    formik.errors["password"] !== "" &&
+                    formik.touched.password
+                  }
+                >
+                  <FormLabel htmlFor="password">Password</FormLabel>
+
                   <InputGroup>
                     <InputLeftElement pointerEvents="none" color="gray.300">
                       <LockIcon />
                     </InputLeftElement>
                     <Input
+                      id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your Password"
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
                     <InputRightElement width="4.5rem">
                       <Button h="1.75rem" size="sm" onClick={handleShowClick}>
@@ -105,26 +159,28 @@ function Login() {
                       </Button>
                     </InputRightElement>
                   </InputGroup>
+                  <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
+
                   <FormHelperText textAlign="right">
                     <Link>forgot password?</Link>
                   </FormHelperText>
                 </FormControl>
-                <Button
-                  isLoading={loading}
-                  borderRadius={0}
-                  type="submit"
-                  variant="solid"
-                  colorScheme="blue"
-                  width="full"
-                >
-                  Login
-                </Button>
+                <Box pt="5">
+                  <Button
+                    isLoading={submitting}
+                    type="submit"
+                    colorScheme="blue"
+                    width="full"
+                  >
+                    Login
+                  </Button>
+                </Box>
               </Stack>
             </form>
-            <Center>
-              New to user?
-              <Link color="teal.500" href="#">
-                Sign Up
+            <Divider m="3" color="gray.300" />
+            <Center mt="6">
+              <Link colorScheme="blue" href="signup">
+                New user? Sign Up
               </Link>
             </Center>
           </Box>
