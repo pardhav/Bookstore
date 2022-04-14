@@ -18,6 +18,7 @@ import {
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
 import GlobalContext from "../context";
 import { signInWithEmail } from "@/modules";
+import { useFormik } from "formik";
 
 // TODO: Add validations for email and password
 // TODO: Add formik
@@ -25,22 +26,38 @@ import { signInWithEmail } from "@/modules";
 // TODO: navigate to home on suceesful login
 // TODO: link to navigate to signup
 // TODO: add loading state to button
+//"nect7479@gmail.com", "Marvel@3000"
 function Login() {
   const context = React.useContext(GlobalContext);
   const [showPassword, setShowPassword] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  React.useState(() => {
-    console.log(context);
+  // React.useState(() => {
+  //   console.log(context);
+  // });
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: async (values, actions) => {
+      try {
+        actions.setSubmitting(true);
+        const user = await signInWithEmail(values.email, values.password);
+        if (user && context.state) {
+          context.state?.toggleHeader();
+        }
+      } catch (error) {
+        
+      } finally {
+        actions.setSubmitting(false);
+      }
+      
+    },
   });
   const handleShowClick = () => setShowPassword(!showPassword);
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
     event.preventDefault();
-    const user = await signInWithEmail("nect7479@gmail.com", "Marvel@3000");
-    if (user && context.state) {
-      context.state?.toggleHeader();
-      setLoading(false);
-    }
   };
   return (
     <Layout hideHeader title="NECT - Login">
@@ -52,6 +69,7 @@ function Login() {
           alignItems="center"
           borderRadius={12}
           p={8}
+          boxShadow="md"
         >
           <Box
             minW={{ base: "90%", md: "468px" }}
@@ -96,7 +114,7 @@ function Login() {
                   borderRadius={0}
                   type="submit"
                   variant="solid"
-                  colorScheme="teal"
+                  colorScheme="blue"
                   width="full"
                 >
                   Login
