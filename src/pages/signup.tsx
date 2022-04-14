@@ -1,19 +1,3 @@
-import { Center } from '@chakra-ui/react'
-import Layout from 'components/layout'
-import React from 'react'
+import SignUp from "components/SignUp";
 
-function Signup() {
-  return (
-    <Layout>
-      <Center boxShadow="md">
-        <form>
-          
-        </form>
-
-
-      </Center>
-    </Layout>
-  )
-}
-
-export default Signup
+export default SignUp;
