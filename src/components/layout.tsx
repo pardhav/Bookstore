@@ -13,7 +13,9 @@ function Layout(props: ILayoutProps) {
     <>
       <Head>{props.title && <title>{props.title}</title>}</Head>
       {props.hideHeader ?? <Header />}
-      <Box>{props.children}</Box>
+      <Box width={{ "2xl": "75%", xl: "75%" }} m="auto" border="1px solid red">
+        {props.children}
+      </Box>
     </>
   );
 }

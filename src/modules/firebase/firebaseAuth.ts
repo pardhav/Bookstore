@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword,
   UserCredential,
 } from "firebase/auth";
-import { doc, Firestore, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { FirebaseDB, FirebaseAuth } from "./clientApp";
 
 // TODO: persist user token after login

@@ -5,9 +5,6 @@ import {
   Button,
   Flex,
   Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuDivider,
@@ -18,12 +15,10 @@ import {
 import React from "react";
 import { BsCart3, BsInfoCircle } from "react-icons/bs";
 import { FiBox } from "react-icons/fi";
+import SearchBar from "./SearchBar";
 
-interface IHeader {
-  hideActions: boolean;
-}
 // TODO: prevent accidental renders, component now renders on every reload or key stroke
-function Header(props: any) {
+const Header = React.memo((props) => {
   const context = useGlobalContext();
   console.log(context);
   return (
@@ -51,12 +46,7 @@ function Header(props: any) {
           </Heading>
         </Flex>
         <Box maxW="lg" justifyContent="center" flex="1">
-          <InputGroup>
-            <InputLeftElement pointerEvents="none" color="gray.300">
-              <SearchIcon />
-            </InputLeftElement>
-            <Input variant="filled" placeholder="Search the store" maxW="lg" />
-          </InputGroup>
+          <SearchBar />
         </Box>
 
         <Stack direction={{ base: "column", md: "row" }} justifyContent="end">
@@ -76,6 +66,6 @@ function Header(props: any) {
       </Flex>
     </Box>
   );
-}
+});
 
 export default Header;
