@@ -9,7 +9,7 @@ interface ILayoutProps {
   title?: string;
   hideHeader?: boolean;
 }
-function Layout(props: ILayoutProps) {
+export function Layout(props: ILayoutProps) {
   return (
     <>
       <Head>{props.title && <title>{props.title}</title>}</Head>
@@ -23,5 +23,3 @@ function Layout(props: ILayoutProps) {
     </>
   );
 }
-
-export default Layout;

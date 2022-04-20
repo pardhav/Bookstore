@@ -7,7 +7,11 @@ function FullPageSpinner() {
 
   return (
     <>
-      <ScaleFade initialScale={0.9} in={context.state.spinnerStatus} unmountOnExit>
+      <ScaleFade
+        initialScale={0.9}
+        in={context.state.spinnerStatus}
+        unmountOnExit
+      >
         <Center
           bg="gray.100"
           zIndex={9999}

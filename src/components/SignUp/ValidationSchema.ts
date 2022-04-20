@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-const SignupSchema = Yup.object().shape({
+export const SignupSchema = Yup.object().shape({
   "given-name": Yup.string().min(2, "Too Short!").max(50, "Too Long!"),
   "family-name": Yup.string()
     .min(2, "Too Short!")
@@ -13,5 +13,3 @@ const SignupSchema = Yup.object().shape({
     .required("Password is Required"),
   "tel-national": Yup.number().required("Mobile Number is required").positive(),
 });
-
-export default SignupSchema;

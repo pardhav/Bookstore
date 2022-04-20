@@ -1,2 +1,2 @@
-export * from './clientApp'
-export * from './firebaseAuth'
+export * from "./clientApp";
+export * from "./firebaseAuth";

@@ -1,12 +1,14 @@
 import { Grid, GridItem, Text } from "@chakra-ui/react";
 import axios from "axios";
-import Tile from "components/Books/tile";
-import Layout from "components/Layout";
-import { IOpenLibraryDoc, IOpenLibrarySearchRes } from "@/modules";
+import { Layout, Tile } from "@/components";
+import {
+  IOpenLibraryDoc,
+  IOpenLibrarySearchRes,
+  useGlobalContext,
+  isEmpty,
+} from "@/modules";
 import { useRouter } from "next/router";
 import React from "react";
-import { useGlobalContext } from "modules/context";
-import { isEmpty } from "../../../functions/src/utils/StringUtils";
 
 function Search() {
   const router = useRouter();

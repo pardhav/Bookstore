@@ -1,5 +1,13 @@
-import { Box, Grid, GridItem, Image, Text, VStack } from "@chakra-ui/react";
-import Layout from "components/Layout";
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  Image,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { Layout } from "@/components";
 import { useRouter } from "next/router";
 import React from "react";
 import axios from "axios";
@@ -10,7 +18,7 @@ import {
   Works,
   GET_WORKS_INFO,
   GET_ISBN_INFO,
-  isEmpty
+  isEmpty,
 } from "@/modules";
 
 function BooksDetail() {
@@ -72,6 +80,7 @@ function BooksDetail() {
           </VStack>
         </GridItem>
       </Grid>
+      <Button>Add to Cart</Button>
     </Layout>
   );
 }

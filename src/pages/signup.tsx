@@ -10,11 +10,10 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { Layout } from "@/components";
+import { Layout, SignupSchema } from "@/components";
 import { useFormik } from "formik";
 import { createUserWithEmail } from "@/modules";
 import React from "react";
-import SignupSchema from "components/SignUp/ValidationSchema";
 
 //TODO: Add validations to password, mobile number
 //TODO: navigate to home on successful creation

@@ -21,13 +21,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
-import GlobalContext from "../modules/context";
-import { signInWithEmail } from "@/modules";
+import { signInWithEmail, GlobalContext } from "@/modules";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 // TODO: navigate to home on suceesful login
-
 
 //"nect7479@gmail.com", "Marvel@3000"
 

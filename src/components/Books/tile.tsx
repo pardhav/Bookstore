@@ -6,10 +6,8 @@ import { useRouter } from "next/router";
 interface ITile {
   document: IOpenLibraryDoc;
 }
-//title
-// authorname, img,
-// view button
-function Tile(props: ITile) {
+
+export function Tile(props: ITile) {
   const { title, author_name, isbn, first_sentence } = props.document;
   const router = useRouter();
   return (
@@ -53,5 +51,3 @@ function Tile(props: ITile) {
     </>
   );
 }
-
-export default Tile;

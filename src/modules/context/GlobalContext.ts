@@ -24,4 +24,3 @@ export const defaultState: IGlobalState = {
 export const GlobalContext = React.createContext<IGlobalState>(defaultState);
 
 export const useGlobalContext = () => useContext(GlobalContext);
-
