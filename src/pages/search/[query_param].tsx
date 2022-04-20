@@ -43,13 +43,13 @@ function Search() {
     if (router.isReady) {
       fetchResults();
     }
-  }, [router.asPath]);
+  }, []);
   return (
     <>
       <Layout>
         <Text>
-          Showing {fetchResult.numFound} Results for "
-          {<span>{router.query.query_param}</span>}"
+          Showing {fetchResult.numFound} Results for 
+          {<span>{router.query.query_param}</span>}
         </Text>
         <Grid templateColumns="repeat(5, 1fr)" gap={10} mt="10">
           {fetchResult?.docs &&

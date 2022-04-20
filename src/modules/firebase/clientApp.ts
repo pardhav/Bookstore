@@ -12,7 +12,6 @@ const clientCredentials = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
-console.log(clientCredentials);
 const app = firebase.initializeApp(clientCredentials);
 
 export const FirebaseAuth = getAuth(app);

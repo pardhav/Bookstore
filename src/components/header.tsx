@@ -75,4 +75,5 @@ const Header = React.memo((props) => {
   );
 });
 
+Header.displayName = "Header";
 export default Header;

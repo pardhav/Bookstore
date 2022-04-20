@@ -27,6 +27,10 @@ export async function createUserWithEmail(
       lastName,
       mobile,
     });
+    await setDoc(doc(FirebaseDB, "Cart"), {
+      user_id: user.user.uid,
+      items:[]
+    })
   }
 }
 

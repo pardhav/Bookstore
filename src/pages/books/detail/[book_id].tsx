@@ -56,7 +56,7 @@ function BooksDetail() {
 
   React.useEffect(() => {
     fetchBookDetail();
-  }, [router.asPath]);
+  }, []);
   return (
     <Layout>
       <Grid templateColumns="repeat(5, 1fr)" column={2}>
@@ -66,6 +66,7 @@ function BooksDetail() {
               src={GET_ISBN_COVER_S(router.query.book_id as string)}
               width="400"
               height="600"
+              alt={`ISBN ${router.query.book_id} cover`}
             />
           </Box>
         </GridItem>

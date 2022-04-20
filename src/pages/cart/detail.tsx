@@ -5,8 +5,9 @@ import React from "react";
 function Detail() {
   return (
     <>
-      <Layout></Layout>
-      <Box>This is Cart page</Box>
+      <Layout>
+        <Box>This is Cart page</Box>
+      </Layout>
     </>
   );
 }

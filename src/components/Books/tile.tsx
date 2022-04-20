@@ -21,6 +21,7 @@ export function Tile(props: ITile) {
               fallbackSrc="https://via.placeholder.com/150"
               maxW="250"
               maxH="300"
+              alt={`${isbn[0]}`}
             />
           )}
         </Box>

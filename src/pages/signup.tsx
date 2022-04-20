@@ -63,7 +63,7 @@ function SignUp() {
 
   return (
     <Layout title="NECT - SignUp" hideHeader>
-      <Center boxShadow="md" w="100vw" h="100vh" m="auto">
+      <Center m="auto">
         <Box w="800px" boxShadow="md" p="8" borderRadius="10">
           <Box mb="6">
             <Text
