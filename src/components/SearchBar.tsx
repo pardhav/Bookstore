@@ -20,10 +20,7 @@ function SearchBar() {
     onSubmit: async (values, actions) => {
       actions.setSubmitting(false);
       router.push({
-        pathname: "/search",
-        query: {
-          q: values["global-search"],
-        },
+        pathname: `/search/${values["global-search"]}`,
       });
     },
   });

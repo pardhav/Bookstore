@@ -1,15 +1,24 @@
 import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, useDisclosure } from "@chakra-ui/react";
 import theme from "styles/theme";
-import GlobalContext,{defaultState} from "../context";
-import React from 'react'
+import React from "react";
+import { GlobalContext } from "@/modules";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [showHeader, setShowHeader] = React.useState(false);
-  const toggleHeader = () => setShowHeader(!showHeader);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toggleHeader = () => setShowHeader((val) => !val);
   return (
     <GlobalContext.Provider
-      value={{ state: { showHeader, toggleHeader } }}
+      value={{
+        state: {
+          showHeader,
+          toggleHeader,
+          spinnerStatus: isOpen,
+          showSpinner: onOpen,
+          hideSpinner: onClose,
+        },
+      }}
     >
       <ChakraProvider theme={theme}>
         <Component {...pageProps} />

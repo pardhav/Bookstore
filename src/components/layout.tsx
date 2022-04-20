@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import Head from "next/head";
 import React from "react";
+import FullPageSpinner from "./FullPageSpinner";
 import Header from "./header";
 
 interface ILayoutProps {
@@ -12,8 +13,11 @@ function Layout(props: ILayoutProps) {
   return (
     <>
       <Head>{props.title && <title>{props.title}</title>}</Head>
+      <FullPageSpinner />
+
       {props.hideHeader ?? <Header />}
-      <Box width={{ "2xl": "75%", xl: "75%" }} m="auto" border="1px solid red">
+
+      <Box width={{ "2xl": "75%", xl: "75%" }} m="auto" paddingTop={10}>
         {props.children}
       </Box>
     </>

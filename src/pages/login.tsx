@@ -21,7 +21,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
-import GlobalContext from "../context";
+import GlobalContext from "../modules/context";
 import { signInWithEmail } from "@/modules";
 import { useFormik } from "formik";
 import * as Yup from "yup";

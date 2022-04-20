@@ -1,4 +1,4 @@
-import { useGlobalContext } from "@/context";
+import { useGlobalContext } from "modules/context";
 import { ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -12,6 +12,7 @@ import {
   MenuList,
   Stack,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import React from "react";
 import { BsCart3, BsInfoCircle } from "react-icons/bs";
 import { FiBox } from "react-icons/fi";
@@ -42,7 +43,7 @@ const Header = React.memo((props) => {
             letterSpacing={"tighter"}
             fontWeight="normal"
           >
-            Book Store
+            <Link href="/">Book Store</Link>
           </Heading>
         </Flex>
         <Box maxW="lg" justifyContent="center" flex="1">
