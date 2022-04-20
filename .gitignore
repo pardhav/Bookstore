@@ -1,5 +1,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+*/.firebase
+*/.firebaserc
+**/.runtimeconfig.json
+*/yarn.lock
+**/ui-debug.log
+**/database-debug.log
+**/firebase-debug.log
+**/pubsub-debug.log
+**/tsconfig-compile.json
 # dependencies
 /node_modules
 /.pnp
@@ -33,3 +41,5 @@ yarn-error.log*
 *.log
 # typescript
 *.tsbuildinfo
+
+./yarn.lock

@@ -17,11 +17,12 @@ import React from "react";
 import { BsCart3, BsInfoCircle } from "react-icons/bs";
 import { FiBox } from "react-icons/fi";
 import SearchBar from "./SearchBar";
+import { useRouter } from "next/router";
 
 // TODO: prevent accidental renders, component now renders on every reload or key stroke
 const Header = React.memo((props) => {
   const context = useGlobalContext();
-  console.log(context);
+  const router = useRouter();
   return (
     <Box as="header">
       <Flex
@@ -50,13 +51,18 @@ const Header = React.memo((props) => {
           <SearchBar />
         </Box>
 
-        <Stack direction={{ base: "column", md: "row" }} justifyContent="end">
-          <Menu>
+        <Stack justifyContent="end">
+          <Menu closeOnSelect>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               Options
             </MenuButton>
             <MenuList>
-              <MenuItem icon={<BsCart3 />}>Cart</MenuItem>
+              <MenuItem
+                icon={<BsCart3 />}
+                onClick={() => router.push("/cart/detail")}
+              >
+                Cart
+              </MenuItem>
               <MenuItem icon={<FiBox />}>Orders</MenuItem>
               <MenuItem icon={<BsInfoCircle />}>About</MenuItem>
               <MenuDivider />
