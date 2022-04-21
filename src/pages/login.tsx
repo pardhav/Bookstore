@@ -21,9 +21,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
-import { signInWithEmail, GlobalContext } from "@/modules";
+import { GlobalContext, signInWithEmail } from "@/modules";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/router";
 
 // TODO: navigate to home on suceesful login
 
@@ -39,6 +40,7 @@ const LoginSchema = Yup.object().shape({
 function Login() {
   const context = React.useContext(GlobalContext);
   const toast = useToast();
+  const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const formik = useFormik({
@@ -55,6 +57,7 @@ function Login() {
         if (user && context.state) {
           context.state?.toggleHeader();
         }
+        router.push('/');
       } catch (error: any) {
         toast({
           status: "error",

@@ -35,7 +35,7 @@ function SearchBar() {
               </InputLeftElement>
               <Input
                 name="global-search"
-                variant="filled"
+                variant="outline"
                 placeholder="Start typing to search..."
                 maxW="lg"
                 type="text"
@@ -52,6 +52,7 @@ function SearchBar() {
                 borderLeftRadius="0"
                 color="gray.700"
                 type="submit"
+                variant="outline"
               >
                 Search
               </Button>

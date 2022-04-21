@@ -14,11 +14,14 @@ import { Layout, SignupSchema } from "@/components";
 import { useFormik } from "formik";
 import { createUserWithEmail } from "@/modules";
 import React from "react";
+import { route } from "next/dist/server/router";
+import { useRouter } from "next/router";
 
 //TODO: Add validations to password, mobile number
 //TODO: navigate to home on successful creation
 function SignUp() {
   const toast = useToast();
+  const router = useRouter();
   const [submitting, setSubmitting] = React.useState(false);
   // these fields values are defined according to WHATWG standard to support auto-fill in chrome
   const formik = useFormik({
@@ -34,20 +37,25 @@ function SignUp() {
       try {
         actions.setSubmitting(true);
         setSubmitting(true);
-        await createUserWithEmail(
+        let user = await createUserWithEmail(
           values.email,
           values.password,
           values["family-name"],
           values["given-name"],
           values["tel-national"]
         );
-        toast({
-          status: "success",
-          position: "top",
-          title: "Account Created!",
-          description: `Welcome to NECT Family, ${values["family-name"]}`,
-        });
+        if (user) {
+          toast({
+            status: "success",
+            position: "top",
+            title: "Account Created!",
+            description: `Welcome to NECT Family, ${user.displayName}`,
+          });
+          router.push('/')
+        }
+        
       } catch (error: any) {
+        console.error(error);
         toast({
           status: "error",
           position: "top",

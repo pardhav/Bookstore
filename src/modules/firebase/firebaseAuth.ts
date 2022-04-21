@@ -1,10 +1,15 @@
 import {
+  browserLocalPersistence,
   createUserWithEmailAndPassword,
+  setPersistence,
   signInWithEmailAndPassword,
+  updateProfile,
+  User,
   UserCredential,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { FirebaseDB, FirebaseAuth } from "./clientApp";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { FIREBASE_DB, FIREBASE_AUTH } from "./clientApp";
+import Cookies from "universal-cookie";
 
 // TODO: persist user token after login
 export async function createUserWithEmail(
@@ -13,34 +18,42 @@ export async function createUserWithEmail(
   firstName: string,
   lastName: string,
   mobile: string
-) {
+): Promise<User | null> {
+  const cookie = new Cookies();
+  await setPersistence(FIREBASE_AUTH, browserLocalPersistence);
   const user = await createUserWithEmailAndPassword(
-    FirebaseAuth,
+    FIREBASE_AUTH,
     email,
     password
   );
+  cookie.set("user-firebase", user);
   if (user) {
-    await setDoc(doc(FirebaseDB, "Users", email), {
+    await updateProfile(user.user, {
+      displayName: `${firstName} ${lastName}`,
+    });
+    await setDoc(doc(FIREBASE_DB, "Users", email), {
       userId: user.user.uid,
       email,
       firstName,
       lastName,
       mobile,
     });
-    await setDoc(doc(FirebaseDB, "Cart"), {
-      user_id: user.user.uid,
-      items:[]
-    })
+    await addDoc(collection(FIREBASE_DB, "Cart"), {
+      userId: user.user.uid,
+      items: [],
+    });
+    return user.user;
   }
+  return null;
 }
 
 export async function signInWithEmail(
   email: string,
   password: string
 ): Promise<UserCredential> {
-  console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
-  console.log(`Email: ${email}, password: ${password}`);
-  const user = await signInWithEmailAndPassword(FirebaseAuth, email, password);
-  console.log({ user });
+  const cookie = new Cookies();
+  await setPersistence(FIREBASE_AUTH, browserLocalPersistence);
+  const user = await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+  cookie.set("user-firebase", user);
   return user;
 }

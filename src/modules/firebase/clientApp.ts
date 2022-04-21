@@ -14,6 +14,7 @@ const clientCredentials = {
 };
 const app = firebase.initializeApp(clientCredentials);
 
-export const FirebaseAuth = getAuth(app);
-// export const db = firebase.
-export const FirebaseDB = getFirestore(app);
+export const FIREBASE_AUTH = getAuth(app);
+// this var is null if user is currently logged out
+export const CURRENT_LOGGED_IN_USER = FIREBASE_AUTH.currentUser;
+export const FIREBASE_DB = getFirestore(app);
