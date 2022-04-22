@@ -13,17 +13,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import React, { useContext } from "react";
+import React from "react";
 import { BsCart3, BsInfoCircle } from "react-icons/bs";
 import { FiBox } from "react-icons/fi";
 import SearchBar from "./SearchBar";
 import { useRouter } from "next/router";
-import {
-  FIREBASE_AUTH,
-  CURRENT_LOGGED_IN_USER,
-  useGlobalContext,
-  signOutUser,
-} from "@/modules";
+import { useGlobalContext, signOutUser } from "@/modules";
 
 // TODO: prevent accidental renders, component now renders on every reload or key stroke
 const Header = React.memo((props) => {
