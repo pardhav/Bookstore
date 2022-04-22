@@ -5,6 +5,8 @@ import {
   GridItem,
   Image,
   Text,
+  useBoolean,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { Layout } from "@/components";
@@ -26,6 +28,8 @@ function BooksDetail() {
   const [fetchResult, setFetchResult] = React.useState({} as BookDetails);
   const [worksResult, setWorksResult] = React.useState({} as Works);
   const [apiError, setApiError] = React.useState({} as any);
+  const [isAdding, setAdding] = useBoolean();
+  const toast = useToast();
   const router = useRouter();
   const context = useGlobalContext();
   const fetchBookDetail = async () => {
@@ -55,13 +59,21 @@ function BooksDetail() {
     }
   };
   const addToCart = async () => {
-    console.log("Inside add book to cart");
-    if (context.state.user && context.state.user.uid) {
-      await addBookToCart(context.state.user.uid, {
-        title: worksResult.title,
-        isbn: router.query.book_id,
-      });
-    }
+    try {
+      setAdding.on();
+      if (context.state.user && context.state.user.uid) {
+        await addBookToCart(context.state.user.uid, {
+          title: worksResult.title,
+          isbn: router.query.book_id,
+        });
+        toast({
+          status: "success",
+          description: "Book Added to Cart",
+          position: "top",
+        });
+      }
+      setAdding.off();
+    } catch (error) {}
   };
 
   React.useEffect(() => {
@@ -96,6 +108,7 @@ function BooksDetail() {
         </GridItem>
       </Grid>
       <Button
+        isLoading={isAdding}
         onClick={() => {
           addToCart();
         }}
