@@ -1,6 +1,6 @@
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import { getAuth } from "firebase/auth";
+import { getAuth, User, signOut } from "firebase/auth";
 import "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 
@@ -16,5 +16,9 @@ const app = firebase.initializeApp(clientCredentials);
 
 export const FIREBASE_AUTH = getAuth(app);
 // this var is null if user is currently logged out
-export const CURRENT_LOGGED_IN_USER = FIREBASE_AUTH.currentUser;
+export const CURRENT_LOGGED_IN_USER: User | null = FIREBASE_AUTH.currentUser;
 export const FIREBASE_DB = getFirestore(app);
+
+export async function signOutUser() {
+  await signOut(FIREBASE_AUTH);
+}

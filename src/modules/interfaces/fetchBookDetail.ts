@@ -1,6 +1,6 @@
 export interface Timestamp {
   type: string;
-  value: Date;
+  value: Date | string;
 }
 
 export interface IDetail {
@@ -41,7 +41,7 @@ export interface Author {
   type: IDetail;
 }
 export interface Works {
-  description: string;
+  description: string | Timestamp;
   links: Link[];
   title: string;
   covers: number[];

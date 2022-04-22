@@ -1,11 +1,10 @@
-import { UserCredential } from "firebase/auth";
+import { User } from "firebase/auth";
 import React, { useContext } from "react";
 
 export interface IGlobalState {
   state: {
-    showHeader: boolean;
-    toggleHeader: () => void;
-    userData?: UserCredential;
+    isLoggedIn: boolean;
+    user?: User;
     spinnerStatus: boolean;
     showSpinner: () => void;
     hideSpinner: () => void;
@@ -13,8 +12,7 @@ export interface IGlobalState {
 }
 export const defaultState: IGlobalState = {
   state: {
-    showHeader: false,
-    toggleHeader: () => {},
+    isLoggedIn: false,
     spinnerStatus: false,
     showSpinner: () => {},
     hideSpinner: () => {},

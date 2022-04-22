@@ -38,10 +38,12 @@ export async function createUserWithEmail(
       lastName,
       mobile,
     });
+    //TODO: write trigger to crate these docs
     await addDoc(collection(FIREBASE_DB, "Cart"), {
       userId: user.user.uid,
       items: [],
     });
+    await addDoc(collection(FIREBASE_DB, "Orders"), {});
     return user.user;
   }
   return null;

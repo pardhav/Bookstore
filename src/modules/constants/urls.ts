@@ -5,4 +5,4 @@ export const GET_ISBN_INFO = (isbn_id: string): string =>
   `https://openlibrary.org/isbn/${isbn_id}.json`;
 
 export const GET_WORKS_INFO = (works_id: string): string =>
-  `https://openlibrary.org/${works_id}.json`;
+  `https://openlibrary.org${works_id}.json`;

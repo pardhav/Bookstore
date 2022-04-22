@@ -1,23 +1,31 @@
 import type { AppProps } from "next/app";
 import { ChakraProvider, useBoolean, useDisclosure } from "@chakra-ui/react";
 import theme from "styles/theme";
-import React from "react";
+import React, { useState } from "react";
 import { GlobalContext, FIREBASE_AUTH } from "@/modules";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [showHeader, setShowHeader] = useBoolean();
+  const [isLoggedIn, setIsLoggedIn] = useBoolean();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userData, setUserData] = useState({} as User | null);
+
   // const toggleHeader = () => setShowHeader((val) => !val);
   onAuthStateChanged(FIREBASE_AUTH, (user) => {
-    setShowHeader.on();
+    if (user) {
+      setIsLoggedIn.on();
+      setUserData(user);
+    } else {
+      setIsLoggedIn.off();
+      setUserData(null);
+    }
   });
   return (
     <GlobalContext.Provider
       value={{
         state: {
-          showHeader,
-          toggleHeader: setShowHeader.toggle,
+          isLoggedIn,
+          user: userData as User,
           spinnerStatus: isOpen,
           showSpinner: onOpen,
           hideSpinner: onClose,

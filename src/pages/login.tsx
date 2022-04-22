@@ -54,9 +54,9 @@ function Login() {
         actions.setSubmitting(true);
         setSubmitting(true);
         const user = await signInWithEmail(values.email, values.password);
-        if (user && context.state) {
-          context.state?.toggleHeader();
-        }
+        // if (user && context.state) {
+        //   context.state?.toggleHeader();
+        // }
         router.push('/');
       } catch (error: any) {
         toast({

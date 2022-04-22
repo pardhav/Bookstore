@@ -13,18 +13,22 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 import { BsCart3, BsInfoCircle } from "react-icons/bs";
 import { FiBox } from "react-icons/fi";
 import SearchBar from "./SearchBar";
 import { useRouter } from "next/router";
-import { useAuthState, FIREBASE_AUTH } from "@/modules";
-import { signOut } from "firebase/auth";
+import {
+  FIREBASE_AUTH,
+  CURRENT_LOGGED_IN_USER,
+  useGlobalContext,
+  signOutUser
+} from "@/modules";
 
 // TODO: prevent accidental renders, component now renders on every reload or key stroke
 const Header = React.memo((props) => {
-  const user = useAuthState();
   const router = useRouter();
+  const context = useGlobalContext();
   return (
     <Box as="header">
       <Flex
@@ -53,11 +57,11 @@ const Header = React.memo((props) => {
           <SearchBar />
         </Box>
 
-        <HStack justifyContent="end">
-          {user !== null ? (
+        <Box display="flex" justifyContent="end">
+          {context.state.isLoggedIn ? (
             <>
-              <Text pr={5}>Welcome, {user.displayName}</Text>
-              <Menu closeOnSelect>
+              <Text pr={5}>Welcome, {context.state.user?.displayName}</Text>
+              <Menu isLazy closeOnSelect={true}>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                   Options
                 </MenuButton>
@@ -70,11 +74,11 @@ const Header = React.memo((props) => {
                   </MenuItem>
                   <MenuItem icon={<FiBox />}>Orders</MenuItem>
                   <MenuItem icon={<BsInfoCircle />}>About</MenuItem>
-
-                  <MenuDivider />
+                  <MenuDivider/>
                   <MenuItem
-                    onClick={() => {
-                      signOut(FIREBASE_AUTH);
+                    onClick={async () => {
+                      await signOutUser();
+                      console.log("Signed Out!");
                     }}
                   >
                     Sign Out
@@ -87,7 +91,7 @@ const Header = React.memo((props) => {
               Login
             </Button>
           )}
-        </HStack>
+        </Box>
       </Flex>
     </Box>
   );

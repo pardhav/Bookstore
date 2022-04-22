@@ -19,6 +19,7 @@ import {
   GET_WORKS_INFO,
   GET_ISBN_INFO,
   isEmpty,
+  addBookToCart,
 } from "@/modules";
 
 function BooksDetail() {
@@ -53,6 +54,15 @@ function BooksDetail() {
       setApiError(error);
     }
   };
+  const addToCart = async () => {
+    console.log("Inside add book to cart");
+    if (context.state.user && context.state.user.uid) {
+      await addBookToCart(context.state.user.uid, {
+        title: worksResult.title,
+        isbn: router.query.book_id,
+      });
+    }
+  };
 
   React.useEffect(() => {
     fetchBookDetail();
@@ -77,11 +87,21 @@ function BooksDetail() {
                 ? fetchResult.title
                 : fetchResult.full_title}
             </Text>
-            <Text>{worksResult.description}</Text>
+            <Text>
+              {typeof worksResult.description === "object"
+                ? (worksResult.description?.value as string)
+                : worksResult.description}
+            </Text>
           </VStack>
         </GridItem>
       </Grid>
-      <Button>Add to Cart</Button>
+      <Button
+        onClick={() => {
+          addToCart();
+        }}
+      >
+        Add to Cart
+      </Button>
     </Layout>
   );
 }
