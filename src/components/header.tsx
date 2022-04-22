@@ -1,10 +1,10 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
+  Avatar,
   Box,
   Button,
   Flex,
   Heading,
-  HStack,
   Menu,
   MenuButton,
   MenuDivider,
@@ -22,7 +22,7 @@ import {
   FIREBASE_AUTH,
   CURRENT_LOGGED_IN_USER,
   useGlobalContext,
-  signOutUser
+  signOutUser,
 } from "@/modules";
 
 // TODO: prevent accidental renders, component now renders on every reload or key stroke
@@ -60,10 +60,28 @@ const Header = React.memo((props) => {
         <Box display="flex" justifyContent="end">
           {context.state.isLoggedIn ? (
             <>
-              <Text pr={5}>Welcome, {context.state.user?.displayName}</Text>
               <Menu isLazy closeOnSelect={true}>
-                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                  Options
+                <MenuButton
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                  variant="outline"
+                >
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignContent="center"
+                    alignItems="baseline"
+                    m={2}
+                  >
+                    <Avatar
+                      name={`${context.state.user?.displayName as string}`}
+                      size="sm"
+                      mr="3"
+                    />
+                    <Text fontWeight="normal">
+                      {context.state.user?.displayName}
+                    </Text>
+                  </Box>
                 </MenuButton>
                 <MenuList>
                   <MenuItem
@@ -74,7 +92,7 @@ const Header = React.memo((props) => {
                   </MenuItem>
                   <MenuItem icon={<FiBox />}>Orders</MenuItem>
                   <MenuItem icon={<BsInfoCircle />}>About</MenuItem>
-                  <MenuDivider/>
+                  <MenuDivider />
                   <MenuItem
                     onClick={async () => {
                       await signOutUser();
