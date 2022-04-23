@@ -22,6 +22,7 @@ import {
   GET_ISBN_INFO,
   isEmpty,
   addBookToCart,
+  getBookDetails,
 } from "@/modules";
 
 function BooksDetail() {
@@ -34,6 +35,10 @@ function BooksDetail() {
   const context = useGlobalContext();
   const fetchBookDetail = async () => {
     try {
+      const dataFromFirestore = await getBookDetails(
+        router.query.book_id as string
+      );
+      console.log({ dataFromFirestore });
       if (isEmpty(router.query.book_id as string)) {
         context.state.showSpinner();
         const res = await axios({
@@ -78,16 +83,17 @@ function BooksDetail() {
 
   React.useEffect(() => {
     fetchBookDetail();
-  }, []);
+  }, [router.asPath]);
   return (
     <Layout>
       <Grid templateColumns="repeat(5, 1fr)" column={2}>
         <GridItem colSpan={2}>
           <Box maxW="400" maxH="600">
             <Image
+              borderRadius="md"
               src={GET_ISBN_COVER_S(router.query.book_id as string)}
-              width="400"
-              height="600"
+              width="250"
+              height="400"
               alt={`ISBN ${router.query.book_id} cover`}
             />
           </Box>
@@ -99,24 +105,32 @@ function BooksDetail() {
                 ? fetchResult.title
                 : fetchResult.full_title}
             </Text>
+            {/* <Text>{getRandomPrice()}</Text> */}
             <Text>
               {typeof worksResult.description === "object"
                 ? (worksResult.description?.value as string)
                 : worksResult.description}
             </Text>
+            <Button
+              isFullWidth
+              isLoading={isAdding}
+              onClick={() => {
+                addToCart();
+              }}
+              colorScheme="blue"
+            >
+              Add to Cart
+            </Button>
           </VStack>
         </GridItem>
       </Grid>
-      <Button
-        isLoading={isAdding}
-        onClick={() => {
-          addToCart();
-        }}
-      >
-        Add to Cart
-      </Button>
     </Layout>
   );
+}
+function getRandomPrice(): number {
+  let min = Math.ceil(25);
+  let max = Math.floor(350);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 
 export default BooksDetail;

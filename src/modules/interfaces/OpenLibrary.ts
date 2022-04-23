@@ -74,6 +74,7 @@ export interface IOpenLibraryDoc {
   time: string[];
   time_facet: string[];
   time_key: string[];
+  authors: string;
 }
 
 export interface IOpenLibrarySearchRes {

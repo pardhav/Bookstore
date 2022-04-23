@@ -35,3 +35,9 @@ export async function addBookToCart(
     }
   }
 }
+
+export async function fetchCartDetails(userId: string): Promise<any> {
+  console.log("Fetching carts for user");
+  const cartDoc = doc(FIREBASE_DB, "Cart", userId);
+  return (await getDoc(cartDoc)).data();
+}

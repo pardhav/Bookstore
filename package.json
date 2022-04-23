@@ -15,6 +15,7 @@
     "@chakra-ui/react": "^1.8.8",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "algoliasearch": "^4.13.0",
     "axios": "^0.26.1",
     "chakra-ui-steps": "^1.7.2",
     "firebase": "^9.6.11",

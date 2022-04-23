@@ -8,7 +8,7 @@ interface ITile {
 }
 
 export function Tile(props: ITile) {
-  const { title, author_name, isbn, first_sentence } = props.document;
+  const { title, authors, isbn, first_sentence } = props.document;
   const router = useRouter();
   return (
     <>
@@ -17,7 +17,7 @@ export function Tile(props: ITile) {
           {isbn && isbn.length > 0 && (
             <Image
               borderRadius="md"
-              src={`https://covers.openlibrary.org/b/isbn/${isbn[0]}-M.jpg`}
+              src={`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`}
               fallbackSrc="https://via.placeholder.com/150"
               maxW="250"
               maxH="300"
@@ -30,12 +30,13 @@ export function Tile(props: ITile) {
           <Text fontWeight="semibold" size="md" noOfLines={2}>
             {title}
           </Text>
-          <Text fontSize="sm">By {author_name}</Text>
+          <Text fontSize="sm">By {authors}</Text>
           <Box>
             <Text noOfLines={3} fontSize="sm" pt={3}>
               {first_sentence}
             </Text>
           </Box>
+          <Text>{isbn}</Text>
         </Box>
         <Box w="100%">
           <Button
