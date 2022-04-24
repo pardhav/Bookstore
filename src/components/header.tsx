@@ -18,12 +18,14 @@ import { BsCart3, BsInfoCircle } from "react-icons/bs";
 import { FiBox } from "react-icons/fi";
 import SearchBar from "./SearchBar";
 import { useRouter } from "next/router";
-import { useGlobalContext, signOutUser } from "@/modules";
+import { signOutUser } from "@/modules";
+import { useAuth } from "modules/firebase/AuthProvider";
 
 // TODO: prevent accidental renders, component now renders on every reload or key stroke
 const Header = React.memo((props) => {
   const router = useRouter();
-  const context = useGlobalContext();
+  const auth = useAuth();
+
   return (
     <Box as="header">
       <Flex
@@ -53,13 +55,13 @@ const Header = React.memo((props) => {
         </Box>
 
         <Box display="flex" justifyContent="end">
-          {context.state.isLoggedIn ? (
+          {auth.user ? (
             <>
-              <Menu isLazy closeOnSelect={true}>
+              <Menu closeOnSelect={true}>
                 <MenuButton
                   as={Button}
                   rightIcon={<ChevronDownIcon />}
-                  variant="outline"
+                  variant="ghost"
                 >
                   <Box
                     display="flex"
@@ -69,13 +71,11 @@ const Header = React.memo((props) => {
                     m={2}
                   >
                     <Avatar
-                      name={`${context.state.user?.displayName as string}`}
+                      name={`${auth.user?.displayName as string}`}
                       size="sm"
                       mr="3"
                     />
-                    <Text fontWeight="normal">
-                      {context.state.user?.displayName}
-                    </Text>
+                    <Text fontWeight="normal">{auth.user?.displayName}</Text>
                   </Box>
                 </MenuButton>
                 <MenuList>

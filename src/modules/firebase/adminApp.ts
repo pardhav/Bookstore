@@ -13,3 +13,5 @@ if (!admin.app.length) {
     databaseURL: "https://bookstore-103c6-default-rtdb.firebaseio.com",
   });
 }
+
+export { admin as FIREBASE_ADMIN };

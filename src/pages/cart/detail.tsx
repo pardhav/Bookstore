@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   Grid,
   GridItem,
@@ -15,52 +14,28 @@ import {
 import { Layout } from "@/components";
 import React from "react";
 import {
-  fetchCartDetails,
   GET_ISBN_COVER_S,
   useGlobalContext,
   updateCartQuantity,
-  FIREBASE_AUTH,
 } from "@/modules";
-import { testCartData } from "modules/firebase/testResponse";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-
+import nookies from "nookies";
 //dp_buyer_pp_US_1650783977532505@paypal.com
 //kbH7Fz(mjDj@$QW
 import { BsTrash } from "react-icons/bs";
 import PaypalButtons from "./paypalButtons";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { FIREBASE_ADMIN } from "modules/firebase/adminApp";
 interface ICartData {
   title: string;
   price: number;
   quantity: number;
   isbn: string;
 }
-function Detail() {
+function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  console.log({ props });
+  const { cart, subTotal, taxes, shipping, totalBeforeTax, mainTotal } = props;
   const context = useGlobalContext();
-  const [cartData, setCartData] = React.useState([] as any);
-  const [totals, setTotals] = React.useState({} as any);
-  const fetchCartData = async () => {
-    console.log("Fetching DATA");
-    console.log(context?.state?.user?.uid);
-    console.log(FIREBASE_AUTH.currentUser?.uid);
-    if (context?.state?.user && context?.state?.user.uid) {
-      const data = await fetchCartDetails(context?.state?.user.uid);
-      console.log({ data });
-      setCartData(data);
-      console.log({ data });
-      console.log(Object.values(data));
-      let total = 0;
-      // Object.values(data).forEach((data: ICartData) => {
-      //   total = total + data.price * data.quantity;
-      // });
-      let tempTotals = {} as any;
-      tempTotals.subTotal = total;
-      tempTotals.taxes = total * (6.25 / 100);
-      tempTotals.shipping = 4.99;
-      tempTotals.totalBeforeTax = total + 4.99;
-      tempTotals.mainTotal = total + 4.99 + total * (6.25 / 100);
-      setTotals(tempTotals);
-    }
-  };
+
   const updateQuantity = async (isbn: string, newValue: string) => {
     await updateCartQuantity(
       context?.state?.user?.uid as string,
@@ -68,13 +43,6 @@ function Detail() {
       newValue
     );
   };
-  React.useEffect(() => {
-    console.log(window);
-    if (typeof window !== "undefined") {
-      console.log("--- USE EFFECT of CART -----");
-      fetchCartData();
-    }
-  }, []);
   return (
     <>
       <Layout>
@@ -88,89 +56,87 @@ function Detail() {
               >
                 Shopping Cart
               </Heading>
-              {cartData && Object.values(cartData).length > 0 && (
+              {cart && Object.values(cart).length > 0 && (
                 <VStack spacing={6} mt={10}>
-                  {Object.keys(cartData)?.map(
-                    (cartId: string, index: number) => {
-                      const item = cartData[cartId];
-                      return (
-                        <Box w={"100%"} key={index}>
+                  {Object.keys(cart)?.map((cartId: string, index: number) => {
+                    const item = cart[cartId] as ICartData;
+                    return (
+                      <Box w={"100%"} key={index}>
+                        <HStack
+                          justifyContent={"space-between"}
+                          alignItems={"center"}
+                        >
+                          <HStack w={"full"}>
+                            <Box
+                              width="125px"
+                              height="125px"
+                              display={"flex"}
+                              justifyContent={"center"}
+                            >
+                              <Image
+                                borderRadius="lg"
+                                src={GET_ISBN_COVER_S(item.isbn)}
+                                maxWidth="125"
+                                maxHeight="125"
+                                alt={`ISBN ${item.isbn} cover`}
+                                objectFit={"cover"}
+                              />
+                            </Box>
+
+                            <Text
+                              fontSize={"md"}
+                              fontFamily={"body"}
+                              fontWeight={"medium"}
+                            >{`${item.title}`}</Text>
+                          </HStack>
                           <HStack
                             justifyContent={"space-between"}
                             alignItems={"center"}
+                            w={"full"}
                           >
-                            <HStack w={"full"}>
-                              <Box
-                                width="125px"
-                                height="125px"
-                                display={"flex"}
-                                justifyContent={"center"}
+                            <Box>
+                              <Select
+                                defaultValue={item.quantity}
+                                onChange={async (
+                                  event: React.ChangeEvent<HTMLSelectElement>
+                                ) => {
+                                  console.log(
+                                    `selected value: ${event.target.value}`
+                                  );
+                                  // if (item.quantity !== event.target.value) {
+                                  //   await updateQuantity(
+                                  //     cartId,
+                                  //     event.target.value
+                                  //   );
+                                  // }
+                                  console.log("select clicked");
+                                }}
                               >
-                                <Image
-                                  borderRadius="lg"
-                                  src={GET_ISBN_COVER_S(item.isbn)}
-                                  maxWidth="125"
-                                  maxHeight="125"
-                                  alt={`ISBN ${item.isbn} cover`}
-                                  objectFit={"cover"}
-                                />
-                              </Box>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                              </Select>
+                            </Box>
 
-                              <Text
-                                fontSize={"md"}
-                                fontFamily={"body"}
-                                fontWeight={"medium"}
-                              >{`${item.title}`}</Text>
-                            </HStack>
-                            <HStack
-                              justifyContent={"space-between"}
-                              alignItems={"center"}
-                              w={"full"}
-                            >
-                              <Box>
-                                <Select
-                                  defaultValue={item.quantity}
-                                  onChange={async (
-                                    event: React.ChangeEvent<HTMLSelectElement>
-                                  ) => {
-                                    console.log(
-                                      `selected value: ${event.target.value}`
-                                    );
-                                    // if (item.quantity !== event.target.value) {
-                                    //   await updateQuantity(
-                                    //     cartId,
-                                    //     event.target.value
-                                    //   );
-                                    // }
-                                    console.log("select clicked");
-                                  }}
-                                >
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                  <option value="4">4</option>
-                                  <option value="5">5</option>
-                                  <option value="6">6</option>
-                                  <option value="7">7</option>
-                                  <option value="8">8</option>
-                                  <option value="9">9</option>
-                                </Select>
-                              </Box>
-
-                              <Text
-                                fontWeight={"medium"}
-                                color={"gray.700"}
-                              >{`$${item.price}`}</Text>
-                              <IconButton
-                                aria-label="Search database"
-                                icon={<BsTrash color="red" />}
-                              />
-                            </HStack>
+                            <Text
+                              fontWeight={"medium"}
+                              color={"gray.700"}
+                            >{`$${item.price}`}</Text>
+                            <IconButton
+                              aria-label="Search database"
+                              icon={<BsTrash color="red" />}
+                            />
                           </HStack>
-                        </Box>
-                      );
-                    }
-                  )}
+                        </HStack>
+                      </Box>
+                    );
+                  })}
                 </VStack>
               )}
             </GridItem>
@@ -196,7 +162,7 @@ function Detail() {
                       <Text
                         fontWeight={"medium"}
                         color={"gray.600"}
-                      >{`$${totals.subTotal}`}</Text>
+                      >{`$${subTotal}`}</Text>
                     </Box>
                     <Box display={"flex"} justifyContent={"space-between"}>
                       <Text fontWeight={"medium"} color={"gray.600"}>
@@ -205,7 +171,7 @@ function Detail() {
                       <Text
                         fontWeight={"medium"}
                         color={"gray.600"}
-                      >{`$${totals.shipping}`}</Text>
+                      >{`$${shipping}`}</Text>
                     </Box>
                     <Box display={"flex"} justifyContent={"space-between"}>
                       <Text fontWeight={"medium"} color={"gray.600"}>
@@ -214,7 +180,7 @@ function Detail() {
                       <Text
                         fontWeight={"medium"}
                         color={"gray.600"}
-                      >{`$${totals.totalBeforeTax}`}</Text>
+                      >{`$${totalBeforeTax}`}</Text>
                     </Box>
                     <Box display={"flex"} justifyContent={"space-between"}>
                       <Text fontWeight={"medium"} color={"gray.600"}>
@@ -223,7 +189,7 @@ function Detail() {
                       <Text
                         fontWeight={"medium"}
                         color={"gray.600"}
-                      >{`$${totals.taxes}`}</Text>
+                      >{`$${taxes}`}</Text>
                     </Box>
                     <Box
                       display={"flex"}
@@ -236,11 +202,11 @@ function Detail() {
                       <Text
                         fontWeight={"semibold"}
                         fontSize={"lg"}
-                      >{`$${totals.mainTotal}`}</Text>
+                      >{`$${mainTotal}`}</Text>
                     </Box>
                   </Box>
                   <Box mt={8}>
-                    <PaypalButtons amount={totals.mainTotal} />
+                    <PaypalButtons amount={mainTotal} />
                   </Box>
                 </Box>
               </Center>
@@ -253,3 +219,47 @@ function Detail() {
 }
 
 export default Detail;
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  try {
+    const cookies = nookies.get(ctx);
+    const token = await FIREBASE_ADMIN.auth().verifyIdToken(cookies.token);
+
+    // the user is authenticated!
+    const { uid } = token;
+    if (uid) {
+      const cartRef = FIREBASE_ADMIN.firestore().collection("Cart").doc(uid);
+      const cartData = (await cartRef.get()).data() as ICartData[];
+      let total = 0;
+      Object.values(cartData).forEach((data: ICartData) => {
+        total = total + data.price * data.quantity;
+      });
+      let tempTotals = {} as any;
+      tempTotals.subTotal = total.toFixed(2);
+      tempTotals.taxes = (total * (6.25 / 100)).toFixed(2);
+      tempTotals.shipping = 4.99;
+      tempTotals.totalBeforeTax = (total + 4.99).toFixed(2);
+      tempTotals.mainTotal = (total + 4.99 + total * (6.25 / 100)).toFixed(2);
+      return {
+        props: { cart: { ...cartData }, ...tempTotals },
+      };
+    } else {
+      // return if user is not authenticated
+      ctx.res.writeHead(302, { Location: "/login" });
+      ctx.res.end();
+    }
+  } catch (err) {
+    console.error({ err });
+    // either the `token` cookie didn't exist
+    // or token verification failed
+    // either way: redirect to the login page
+    ctx.res.writeHead(302, { Location: "/login" });
+    ctx.res.end();
+
+    // `as never` prevents inference issues
+    // with InferGetServerSidePropsType.
+    // The props returned here don't matter because we've
+    // already redirected the user.
+    return { props: {} as never };
+  }
+};

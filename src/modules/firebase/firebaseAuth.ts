@@ -9,7 +9,6 @@ import {
 } from "firebase/auth";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "./clientApp";
-import Cookies from "universal-cookie";
 
 // TODO: persist user token after login
 export async function createUserWithEmail(
@@ -19,14 +18,12 @@ export async function createUserWithEmail(
   lastName: string,
   mobile: string
 ): Promise<User | null> {
-  const cookie = new Cookies();
   await setPersistence(FIREBASE_AUTH, browserLocalPersistence);
   const user = await createUserWithEmailAndPassword(
     FIREBASE_AUTH,
     email,
     password
   );
-  cookie.set("user-firebase", user);
   if (user) {
     await updateProfile(user.user, {
       displayName: `${firstName} ${lastName}`,
@@ -53,9 +50,7 @@ export async function signInWithEmail(
   email: string,
   password: string
 ): Promise<UserCredential> {
-  const cookie = new Cookies();
   await setPersistence(FIREBASE_AUTH, browserLocalPersistence);
   const user = await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-  cookie.set("user-firebase", user);
   return user;
 }
