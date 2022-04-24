@@ -100,7 +100,7 @@ const Header = React.memo((props) => {
               </Menu>
             </>
           ) : (
-            <Button variant="outline" onClick={() => router.push("/login")}>
+            <Button variant="ghost" onClick={() => router.push("/login")}>
               Login
             </Button>
           )}

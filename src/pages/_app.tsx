@@ -4,6 +4,8 @@ import theme from "styles/theme";
 import React, { useState } from "react";
 import { GlobalContext, FIREBASE_AUTH } from "@/modules";
 import { onAuthStateChanged, User } from "firebase/auth";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoggedIn, setIsLoggedIn] = useBoolean();
@@ -12,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   // const toggleHeader = () => setShowHeader((val) => !val);
   onAuthStateChanged(FIREBASE_AUTH, (user) => {
+    console.log({ user });
     if (user) {
       setIsLoggedIn.on();
       setUserData(user);

@@ -33,7 +33,7 @@ function Search() {
       //   },
       // });
       const res = await searchUsingTitle(router.query.query_param as string);
-      // console.log(res.data);
+      console.log(res);
       setFetchResult(res as any);
       context.state.hideSpinner();
     }
@@ -51,11 +51,15 @@ function Search() {
           Showing {fetchResult.numFound} Results for
           {<span>{router.query.query_param}</span>}
         </Text>
-        <Grid templateColumns="repeat(5, 1fr)" gap={10} mt="10">
+        <Grid templateColumns="repeat(5, 1fr)" mt="10">
           {fetchResult?.hits &&
             fetchResult?.hits.map((doc: any, index: number) => (
               <GridItem key={index}>
-                <Tile document={doc as IOpenLibraryDoc} />
+                <Tile
+                  title={doc.title}
+                  imageUrl={`https://covers.openlibrary.org/b/isbn/${doc.isbn}-M.jpg`}
+                  isbn={doc.isbn as string}
+                />
               </GridItem>
             ))}
         </Grid>

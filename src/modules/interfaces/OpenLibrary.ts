@@ -1,4 +1,9 @@
 export interface IOpenLibraryDoc {
+  average_rating: string;
+  ratings_count: string;
+  text_reviews_count: string;
+  num_pages: string;
+  price: number;
   key: string;
   type: string;
   seed: string[];
@@ -16,7 +21,7 @@ export interface IOpenLibraryDoc {
   contributor: string[];
   lcc: string[];
   ddc: string[];
-  isbn: string[];
+  isbn: string;
   last_modified_i: number;
   ia: string[];
   ebook_count_i: number;
@@ -28,10 +33,11 @@ export interface IOpenLibraryDoc {
   cover_edition_key: string;
   cover_i: number;
   first_sentence: string[];
-  publisher: string[];
+  publisher: string;
   language: string[];
   author_key: string[];
   author_name: string[];
+  authors_array: string[];
   author_alternative_name: string[];
   person: string[];
   place: string[];
@@ -51,6 +57,7 @@ export interface IOpenLibraryDoc {
   ia_box_id: string[];
   ia_collection_s: string;
   publisher_facet: string[];
+  publication_date: string;
   person_key: string[];
   place_key: string[];
   person_facet: string[];

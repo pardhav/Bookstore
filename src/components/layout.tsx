@@ -17,7 +17,7 @@ export function Layout(props: ILayoutProps) {
 
       {props.hideHeader ?? <Header />}
 
-      <Box width={{ "2xl": "75%", xl: "75%" }} m="auto" paddingTop="10" mb="5">
+      <Box width={{ "2xl": "75%", xl: "85%" }} m="auto" paddingTop="10" mb="5">
         {props.children}
       </Box>
     </>

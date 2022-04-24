@@ -3,6 +3,8 @@ import {
   Button,
   Grid,
   GridItem,
+  Heading,
+  HStack,
   Image,
   Text,
   useBoolean,
@@ -23,11 +25,17 @@ import {
   isEmpty,
   addBookToCart,
   getBookDetails,
+  IOpenLibraryDoc,
 } from "@/modules";
+import { bookDetail } from "modules/firebase/testResponse";
+import { AiFillStar } from "react-icons/ai";
 
 function BooksDetail() {
   const [fetchResult, setFetchResult] = React.useState({} as BookDetails);
   const [worksResult, setWorksResult] = React.useState({} as Works);
+  const [firestoreResult, setFirestoreResult] = React.useState(
+    {} as IOpenLibraryDoc
+  );
   const [apiError, setApiError] = React.useState({} as any);
   const [isAdding, setAdding] = useBoolean();
   const toast = useToast();
@@ -35,12 +43,15 @@ function BooksDetail() {
   const context = useGlobalContext();
   const fetchBookDetail = async () => {
     try {
-      const dataFromFirestore = await getBookDetails(
-        router.query.book_id as string
-      );
-      console.log({ dataFromFirestore });
       if (isEmpty(router.query.book_id as string)) {
         context.state.showSpinner();
+        const dataFromFirestore = await getBookDetails(
+          router.query.book_id as string
+        );
+        setFirestoreResult(dataFromFirestore as IOpenLibraryDoc);
+        // setFirestoreResult(bookDetail as any);
+        console.log({ dataFromFirestore });
+
         const res = await axios({
           method: "GET",
           url: GET_ISBN_INFO(router.query.book_id as string),
@@ -67,9 +78,10 @@ function BooksDetail() {
     try {
       setAdding.on();
       if (context.state.user && context.state.user.uid) {
-        await addBookToCart(context.state.user.uid, {
-          title: worksResult.title,
+        await addBookToCart({
+          title: firestoreResult.title,
           isbn: router.query.book_id,
+          price: firestoreResult.price,
         });
         toast({
           status: "success",
@@ -82,6 +94,7 @@ function BooksDetail() {
   };
 
   React.useEffect(() => {
+    console.log("----- USE EFFECT OF BOOK_ID ------");
     fetchBookDetail();
   }, [router.asPath]);
   return (
@@ -100,12 +113,34 @@ function BooksDetail() {
         </GridItem>
         <GridItem colSpan={3}>
           <VStack alignItems="flex-start">
-            <Text fontSize="2xl" fontWeight="semibold">
-              {!isEmpty(fetchResult.full_title as string)
-                ? fetchResult.title
-                : fetchResult.full_title}
+            <HStack>
+              <Text color={"gray.600"} fontSize={"md"}>
+                {firestoreResult.average_rating}
+              </Text>
+              <span>
+                <AiFillStar size={"20px"} color={"#4A5568"} />
+              </span>
+              <Text color={"gray.600"} fontSize={"md"}>
+                {`(${firestoreResult.ratings_count})`}
+              </Text>
+            </HStack>
+
+            <Heading fontFamily={"body"} fontWeight={500} fontSize={"3xl"}>
+              {firestoreResult.title}
+            </Heading>
+            <Text
+              fontSize={"2xl"}
+              fontWeight={500}
+            >{`$${firestoreResult.price}`}</Text>
+            <Text
+              fontSize={"lg"}
+              fontWeight={500}
+            >{`First Publish Date: ${firestoreResult.publication_date}`}</Text>
+            <Text fontSize={"lg"} fontWeight={500}>
+              {`Number of Pages ${firestoreResult.num_pages}`}
             </Text>
-            {/* <Text>{getRandomPrice()}</Text> */}
+            <Text>{firestoreResult.publisher}</Text>
+            {/* <Text>{firestoreResult.authors_array.join(", ")}</Text> */}
             <Text>
               {typeof worksResult.description === "object"
                 ? (worksResult.description?.value as string)
@@ -127,10 +162,4 @@ function BooksDetail() {
     </Layout>
   );
 }
-function getRandomPrice(): number {
-  let min = Math.ceil(25);
-  let max = Math.floor(350);
-  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-}
-
 export default BooksDetail;
