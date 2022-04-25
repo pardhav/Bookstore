@@ -63,8 +63,7 @@ export default function MyOrders(
       />
     );
   }
-  console.log({ props });
-  // const orders = Object.values();
+
   return (
     <Layout>
       <>
@@ -72,7 +71,7 @@ export default function MyOrders(
           maxW={{ base: "3xl", lg: "7xl", "2xl": "75%" }}
           mx="auto"
           px={{ base: "4", md: "8", lg: "12" }}
-          py={{ base: "6", md: "8", lg: "12" }}
+          // py={{ base: "6", md: "8", lg: "12" }}
         >
           <Heading
             fontFamily={"heading"}
@@ -228,7 +227,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     if (uid) {
       const orderRef = FIREBASE_ADMIN.firestore().collection("Orders").doc(uid);
       const orders = await orderRef.get();
-      console.log({ orders });
 
       if (orders.exists) {
         const orderData = orders.data();
