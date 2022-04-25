@@ -1,7 +1,7 @@
 import { Center, Stack, Text } from "@chakra-ui/react";
 import Image, { StaticImageData } from "next/image";
 import React from "react";
-import { Layout } from "./Layout";
+// import { Layout } from "./Layout";
 
 interface INotFound {
   image: StaticImageData;
