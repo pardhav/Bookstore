@@ -43,3 +43,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 ./yarn.lock
+
+# Local Netlify folder
+.netlify
