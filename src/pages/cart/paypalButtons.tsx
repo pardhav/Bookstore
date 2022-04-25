@@ -4,6 +4,8 @@ import {
   BraintreePayPalButtons,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
+import { IFormValues } from "./detail";
+import { createTransaction } from "modules/firebase/transactionServices";
 
 // This values are the props in the UI
 const style = { label: "paypal", layout: "vertical" };
@@ -11,9 +13,10 @@ const style = { label: "paypal", layout: "vertical" };
 
 interface IPaypalButtons {
   amount: string;
+  userInfo: IFormValues;
 }
 export default function PaypalButtons(props: IPaypalButtons) {
-  const { amount } = props;
+  const { amount, userInfo } = props;
   const [clientToken, setClientToken] = useState(null);
 
   useEffect(() => {
@@ -44,7 +47,7 @@ export default function PaypalButtons(props: IPaypalButtons) {
             <BraintreePayPalButtons
               style={{ label: "paypal", layout: "vertical" }}
               disabled={false}
-              fundingSource="" // Available values are: ["paypal", "card", "credit", "paylater", "venmo"]
+              fundingSource="paypal" // Available values are: ["paypal", "card", "credit", "paylater", "venmo"]
               forceReRender={[style, amount]}
               createOrder={function (data, actions) {
                 return actions.braintree
@@ -56,14 +59,13 @@ export default function PaypalButtons(props: IPaypalButtons) {
                     enableShippingAddress: true,
                     shippingAddressEditable: false,
                     shippingAddressOverride: {
-                      recipientName: "Scruff McGruff",
-                      line1: "1234 Main St.",
-                      line2: "Unit 1",
-                      city: "Chicago",
+                      recipientName: `${userInfo.lastName} ${userInfo.firstName}`,
+                      line1: userInfo.street,
+                      city: userInfo.city,
                       countryCode: "US",
-                      postalCode: "60652",
-                      state: "IL",
-                      phone: "123.456.7890",
+                      postalCode: userInfo.postalCode,
+                      state: userInfo.state,
+                      phone: userInfo.mobile,
                     },
                   })
                   .then((orderId) => {
@@ -74,8 +76,9 @@ export default function PaypalButtons(props: IPaypalButtons) {
               onApprove={function (data, actions) {
                 return actions.braintree
                   .tokenizePayment(data)
-                  .then((payload) => {
+                  .then(async (payload) => {
                     // Your code here after capture the order
+                    await createTransaction(payload, userInfo.userId);
                     console.log(JSON.stringify(payload));
                   });
               }}

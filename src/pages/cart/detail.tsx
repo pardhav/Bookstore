@@ -6,8 +6,9 @@ import {
   Heading,
   HStack,
   IconButton,
-  Image,
+  Img,
   Select,
+  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -19,21 +20,61 @@ import {
   updateCartQuantity,
 } from "@/modules";
 import nookies from "nookies";
+import emptyCart from "../../../public/empty_cart.png";
 //dp_buyer_pp_US_1650783977532505@paypal.com
 //kbH7Fz(mjDj@$QW
 import { BsTrash } from "react-icons/bs";
 import PaypalButtons from "./paypalButtons";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { FIREBASE_ADMIN } from "modules/firebase/adminApp";
+import Image from "next/image";
 interface ICartData {
   title: string;
   price: number;
   quantity: number;
   isbn: string;
 }
+export interface IFormValues {
+  mobile: string;
+  firstName: string;
+  email: string;
+  lastName: string;
+  street: string;
+  state: string;
+  postalCode: string;
+  city: string;
+  userId: string;
+}
 function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
   console.log({ props });
-  const { cart, subTotal, taxes, shipping, totalBeforeTax, mainTotal } = props;
+
+  if (Object.keys(props).length === 0) {
+    return (
+      <Layout>
+        <Center>
+          <Stack>
+            <Image src={emptyCart} width="400px" height={"300px"} />
+            <Text
+              textAlign={"center"}
+              color={"gray.700"}
+              fontWeight={"semibold"}
+            >
+              Oops!! Your cart is empty
+            </Text>
+          </Stack>
+        </Center>
+      </Layout>
+    );
+  }
+  const {
+    cart,
+    subTotal,
+    taxes,
+    shipping,
+    totalBeforeTax,
+    mainTotal,
+    userInfo,
+  } = props;
   const context = useGlobalContext();
 
   const updateQuantity = async (isbn: string, newValue: string) => {
@@ -73,7 +114,7 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                               display={"flex"}
                               justifyContent={"center"}
                             >
-                              <Image
+                              <Img
                                 borderRadius="lg"
                                 src={GET_ISBN_COVER_S(item.isbn)}
                                 maxWidth="125"
@@ -206,7 +247,7 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                     </Box>
                   </Box>
                   <Box mt={8}>
-                    <PaypalButtons amount={mainTotal} />
+                    <PaypalButtons amount={mainTotal} userInfo={userInfo} />
                   </Box>
                 </Box>
               </Center>
@@ -226,23 +267,40 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const token = await FIREBASE_ADMIN.auth().verifyIdToken(cookies.token);
 
     // the user is authenticated!
-    const { uid } = token;
+    const { uid, email } = token;
     if (uid) {
+      const userRef = FIREBASE_ADMIN.firestore()
+        .collection("Users")
+        .doc(email as string);
+      const userData = (await userRef.get()).data() as IFormValues;
+      console.log({ userData });
       const cartRef = FIREBASE_ADMIN.firestore().collection("Cart").doc(uid);
-      const cartData = (await cartRef.get()).data() as ICartData[];
-      let total = 0;
-      Object.values(cartData).forEach((data: ICartData) => {
-        total = total + data.price * data.quantity;
-      });
-      let tempTotals = {} as any;
-      tempTotals.subTotal = total.toFixed(2);
-      tempTotals.taxes = (total * (6.25 / 100)).toFixed(2);
-      tempTotals.shipping = 4.99;
-      tempTotals.totalBeforeTax = (total + 4.99).toFixed(2);
-      tempTotals.mainTotal = (total + 4.99 + total * (6.25 / 100)).toFixed(2);
-      return {
-        props: { cart: { ...cartData }, ...tempTotals },
-      };
+
+      const cartResponse = await cartRef.get();
+      if (cartResponse.exists) {
+        const cartData = cartResponse.data() as ICartData[];
+        let total = 0;
+        Object.values(cartData).forEach((data: ICartData) => {
+          total = total + data.price * data.quantity;
+        });
+        let tempTotals = {} as any;
+        tempTotals.subTotal = total.toFixed(2);
+        tempTotals.taxes = (total * (6.25 / 100)).toFixed(2);
+        tempTotals.shipping = 4.99;
+        tempTotals.totalBeforeTax = (total + 4.99).toFixed(2);
+        tempTotals.mainTotal = (total + 4.99 + total * (6.25 / 100)).toFixed(2);
+        return {
+          props: {
+            cart: { ...cartData },
+            ...tempTotals,
+            userInfo: { ...userData },
+          },
+        };
+      } else {
+        return {
+          props: {},
+        };
+      }
     } else {
       // return if user is not authenticated
       ctx.res.writeHead(302, { Location: "/login" });
