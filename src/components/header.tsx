@@ -20,6 +20,7 @@ import SearchBar from "./SearchBar";
 import { useRouter } from "next/router";
 import { signOutUser } from "@/modules";
 import { useAuth } from "modules/firebase/AuthProvider";
+import { MdAccountCircle } from "react-icons/md";
 
 // TODO: prevent accidental renders, component now renders on every reload or key stroke
 const Header = React.memo((props) => {
@@ -80,10 +81,16 @@ const Header = React.memo((props) => {
                 </MenuButton>
                 <MenuList>
                   <MenuItem
+                    icon={<MdAccountCircle />}
+                    onClick={() => router.push("/myaccount")}
+                  >
+                    My Account
+                  </MenuItem>
+                  <MenuItem
                     icon={<BsCart3 />}
                     onClick={() => router.push("/cart/detail")}
                   >
-                    Cart
+                    My Cart
                   </MenuItem>
                   <MenuItem icon={<FiBox />}>Orders</MenuItem>
                   <MenuItem icon={<BsInfoCircle />}>About</MenuItem>

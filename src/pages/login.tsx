@@ -5,7 +5,6 @@ import {
   Button,
   Center,
   Divider,
-  Flex,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -21,7 +20,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { EmailIcon, LockIcon } from "@chakra-ui/icons";
-import { GlobalContext, signInWithEmail } from "@/modules";
+import { signInWithEmail } from "@/modules";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
@@ -38,7 +37,6 @@ const LoginSchema = Yup.object().shape({
     .required("Password is Required"),
 });
 function Login() {
-  const context = React.useContext(GlobalContext);
   const toast = useToast();
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -53,11 +51,8 @@ function Login() {
       try {
         actions.setSubmitting(true);
         setSubmitting(true);
-        const user = await signInWithEmail(values.email, values.password);
-        // if (user && context.state) {
-        //   context.state?.toggleHeader();
-        // }
-        router.push('/');
+        await signInWithEmail(values.email, values.password);
+        router.push("/");
       } catch (error: any) {
         toast({
           status: "error",
