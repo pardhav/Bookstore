@@ -61,6 +61,7 @@ export function Tile(props: ITileProps) {
             width={282}
             objectFit={"fill"}
             src={imageUrl}
+            alt={`${title}-cover`}
           />
         </Box>
         <Stack pt={10} align={"center"}>

@@ -26,6 +26,7 @@ import { BsTrash } from "react-icons/bs";
 import PaypalButtons from "./paypalButtons";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { FIREBASE_ADMIN } from "modules/firebase/adminApp";
+import { getAuth } from "firebase/auth";
 
 interface ICartData {
   title: string;
@@ -46,9 +47,15 @@ export interface IFormValues {
 }
 function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
   console.log({ props });
-
+  const auth = getAuth();
   if (Object.keys(props).length === 0) {
-    return <Notfound tagline="Oops!! Your cart is empty" image={emptyCart} />;
+    return (
+      <Notfound
+        tagline="Oops!! Your cart is empty"
+        image={emptyCart}
+        alt={"Empty Cart cartoon illustration"}
+      />
+    );
   }
   const {
     cart,
@@ -60,14 +67,9 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     totalBeforeTax,
     mainTotal,
   } = props;
-  const context = useGlobalContext();
 
   const updateQuantity = async (isbn: string, newValue: string) => {
-    await updateCartQuantity(
-      context?.state?.user?.uid as string,
-      isbn,
-      newValue
-    );
+    await updateCartQuantity(auth.currentUser?.uid as string, isbn, newValue);
   };
   return (
     <>

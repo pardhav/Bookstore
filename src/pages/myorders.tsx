@@ -1,26 +1,19 @@
 import {
   Box,
   Center,
-  CloseButton,
   Divider,
   Flex,
   Heading,
   Image,
-  Img,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Layout } from "components/Layout";
+import { Layout, Notfound } from "@/components";
 import { FIREBASE_ADMIN } from "modules/firebase/adminApp";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React from "react";
-import { IFormValues } from "./cart/detail";
 import nookies from "nookies";
 import emptyOrderImg from "../../public/no_orders.png";
-import { Notfound } from "components/Notfound";
-import { CartItem } from "components/Cart";
-import { PriceTag } from "components/Cart/CartPriceTag";
-import { CartProductMeta } from "components/Cart/CartProductMeta";
 
 interface ShippingAddress {
   line1: string;
@@ -62,7 +55,13 @@ export default function MyOrders(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) {
   if (Object.keys(props).length === 0) {
-    return <Notfound image={emptyOrderImg} tagline="Oops! No orders found" />;
+    return (
+      <Notfound
+        image={emptyOrderImg}
+        tagline="Oops! No orders found"
+        alt="No order found cartoon image"
+      />
+    );
   }
   console.log({ props });
   // const orders = Object.values();
@@ -88,7 +87,7 @@ export default function MyOrders(
           {Object.keys(props).map((order_key, index) => {
             const order = props[order_key] as IOrder;
             return (
-              <Box borderRadius={"lg"} boxShadow={"md"} p={6}>
+              <Box borderRadius={"lg"} boxShadow={"md"} p={6} key={index}>
                 <Heading
                   fontFamily={"body"}
                   fontSize={"lg"}
@@ -115,7 +114,12 @@ export default function MyOrders(
                       </Heading>
                       {order.items.map((item, index) => {
                         return (
-                          <Stack direction="row" spacing="5" width="full">
+                          <Stack
+                            direction="row"
+                            spacing="5"
+                            width="full"
+                            key={index}
+                          >
                             <Box minWidth="120px" minHeight="120px">
                               <Image
                                 rounded="lg"
