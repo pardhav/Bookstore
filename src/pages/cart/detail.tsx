@@ -8,11 +8,10 @@ import {
   IconButton,
   Img,
   Select,
-  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { Layout } from "@/components";
+import { Layout, Notfound } from "@/components";
 import React from "react";
 import {
   GET_ISBN_COVER_S,
@@ -27,7 +26,7 @@ import { BsTrash } from "react-icons/bs";
 import PaypalButtons from "./paypalButtons";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { FIREBASE_ADMIN } from "modules/firebase/adminApp";
-import Image from "next/image";
+
 interface ICartData {
   title: string;
   price: number;
@@ -49,31 +48,17 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
   console.log({ props });
 
   if (Object.keys(props).length === 0) {
-    return (
-      <Layout>
-        <Center>
-          <Stack>
-            <Image src={emptyCart} width="400px" height={"300px"} />
-            <Text
-              textAlign={"center"}
-              color={"gray.700"}
-              fontWeight={"semibold"}
-            >
-              Oops!! Your cart is empty
-            </Text>
-          </Stack>
-        </Center>
-      </Layout>
-    );
+    return <Notfound tagline="Oops!! Your cart is empty" image={emptyCart} />;
   }
   const {
     cart,
+    userInfo,
+    amounts,
     subTotal,
     taxes,
     shipping,
     totalBeforeTax,
     mainTotal,
-    userInfo,
   } = props;
   const context = useGlobalContext();
 
@@ -93,7 +78,8 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
               <Heading
                 fontFamily={"heading"}
                 fontSize={"2xl"}
-                fontWeight={"extrabold"}
+                fontWeight={"bold"}
+                color={"gray.700"}
               >
                 Shopping Cart
               </Heading>
@@ -247,7 +233,11 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                     </Box>
                   </Box>
                   <Box mt={8}>
-                    <PaypalButtons amount={mainTotal} userInfo={userInfo} />
+                    <PaypalButtons
+                      amount={mainTotal}
+                      userInfo={userInfo}
+                      amounts
+                    />
                   </Box>
                 </Box>
               </Center>
@@ -292,8 +282,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         return {
           props: {
             cart: { ...cartData },
-            ...tempTotals,
+            amounts: { ...tempTotals },
             userInfo: { ...userData },
+            ...tempTotals,
           },
         };
       } else {

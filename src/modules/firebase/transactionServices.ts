@@ -1,7 +1,11 @@
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { FIREBASE_DB } from "./clientApp";
 
-export async function createTransaction(payload: any, userId: string) {
+export async function createTransaction(
+  payload: any,
+  userId: string,
+  amounts: any
+) {
   const transactionRef = doc(FIREBASE_DB, "Transactions", userId);
   const transactionDoc = await getDoc(transactionRef);
   const cartRef = doc(FIREBASE_DB, "Cart", userId);
@@ -16,6 +20,7 @@ export async function createTransaction(payload: any, userId: string) {
     [timeNow]: {
       items: Object.values(cartData as any),
       transaction: payload,
+      amounts,
     },
   };
   if (transactionDoc.exists()) {

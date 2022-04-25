@@ -92,7 +92,12 @@ const Header = React.memo((props) => {
                   >
                     My Cart
                   </MenuItem>
-                  <MenuItem icon={<FiBox />}>Orders</MenuItem>
+                  <MenuItem
+                    icon={<FiBox />}
+                    onClick={() => router.push("/myorders")}
+                  >
+                    My Orders
+                  </MenuItem>
                   <MenuItem icon={<BsInfoCircle />}>About</MenuItem>
                   <MenuDivider />
                   <MenuItem

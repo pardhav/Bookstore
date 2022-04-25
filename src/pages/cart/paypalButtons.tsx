@@ -14,9 +14,10 @@ const style = { label: "paypal", layout: "vertical" };
 interface IPaypalButtons {
   amount: string;
   userInfo: IFormValues;
+  amounts: any;
 }
 export default function PaypalButtons(props: IPaypalButtons) {
-  const { amount, userInfo } = props;
+  const { amount, userInfo, amounts } = props;
   const [clientToken, setClientToken] = useState(null);
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function PaypalButtons(props: IPaypalButtons) {
                   .tokenizePayment(data)
                   .then(async (payload) => {
                     // Your code here after capture the order
-                    await createTransaction(payload, userInfo.userId);
+                    await createTransaction(payload, userInfo.userId, amounts);
                     console.log(JSON.stringify(payload));
                   });
               }}

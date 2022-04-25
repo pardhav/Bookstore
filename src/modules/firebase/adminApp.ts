@@ -1,7 +1,7 @@
 import admin from "firebase-admin";
 
 // to avoid re-initialization during re-renders
-if (!admin.app.length) {
+if (admin.apps.length === 0) {
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId: "bookstore-103c6",

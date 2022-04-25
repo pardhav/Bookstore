@@ -59,7 +59,7 @@ export function Tile(props: ITileProps) {
             rounded={"lg"}
             height={230}
             width={282}
-            objectFit={"cover"}
+            objectFit={"fill"}
             src={imageUrl}
           />
         </Box>
