@@ -93,7 +93,6 @@ export default function MyAccount(
           rounded={"xl"}
           boxShadow={"lg"}
           p={8}
-          my={12}
         >
           <Heading
             fontSize={{ base: "3xl", sm: "2xl" }}

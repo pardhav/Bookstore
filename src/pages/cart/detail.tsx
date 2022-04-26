@@ -15,7 +15,7 @@ import { Layout, Notfound } from "@/components";
 import React from "react";
 import {
   GET_ISBN_COVER_S,
-  useGlobalContext,
+  deleteCartItem,
   updateCartQuantity,
 } from "@/modules";
 import nookies from "nookies";
@@ -27,6 +27,7 @@ import PaypalButtons from "./paypalButtons";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { FIREBASE_ADMIN } from "modules/firebase/adminApp";
 import { getAuth } from "firebase/auth";
+import { useRouter } from "next/router";
 
 interface ICartData {
   title: string;
@@ -46,7 +47,9 @@ export interface IFormValues {
   userId: string;
 }
 function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  console.log({ props });
+  const [isUpdatingQuantity, setUpdatingQuantity] = React.useState(false);
+  // console.log({ props });
+  const router = useRouter();
   const auth = getAuth();
   if (Object.keys(props).length === 0) {
     return (
@@ -68,8 +71,21 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     mainTotal,
   } = props;
 
-  const updateQuantity = async (isbn: string, newValue: string) => {
-    await updateCartQuantity(auth.currentUser?.uid as string, isbn, newValue);
+  const updateQuantity = async (
+    cartId: string,
+    oldValue: number,
+    newValue: string
+  ) => {
+    if (oldValue !== Number(newValue)) {
+      setUpdatingQuantity(true);
+      await updateCartQuantity(
+        auth.currentUser?.uid as string,
+        cartId,
+        newValue
+      );
+      setUpdatingQuantity(false);
+      router.reload();
+    }
   };
   return (
     <>
@@ -126,19 +142,15 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                             <Box>
                               <Select
                                 defaultValue={item.quantity}
+                                isDisabled={isUpdatingQuantity}
                                 onChange={async (
                                   event: React.ChangeEvent<HTMLSelectElement>
                                 ) => {
-                                  console.log(
-                                    `selected value: ${event.target.value}`
+                                  await updateQuantity(
+                                    cartId,
+                                    item.quantity,
+                                    event.target.value
                                   );
-                                  // if (item.quantity !== event.target.value) {
-                                  //   await updateQuantity(
-                                  //     cartId,
-                                  //     event.target.value
-                                  //   );
-                                  // }
-                                  console.log("select clicked");
                                 }}
                               >
                                 <option value="1">1</option>
@@ -160,6 +172,14 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                             <IconButton
                               aria-label="Search database"
                               icon={<BsTrash color="red" />}
+                              onClick={async () => {
+                                console.log("on clicked");
+                                await deleteCartItem(
+                                  auth.currentUser?.uid as string,
+                                  cartId
+                                );
+                                router.reload();
+                              }}
                             />
                           </HStack>
                         </HStack>
@@ -269,8 +289,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       const cartRef = FIREBASE_ADMIN.firestore().collection("Cart").doc(uid);
 
       const cartResponse = await cartRef.get();
-      if (cartResponse.exists) {
-        const cartData = cartResponse.data() as ICartData[];
+      const cartData = cartResponse.data() as ICartData[];
+      if (cartResponse.exists && Object.keys(cartData).length !== 0) {
         let total = 0;
         Object.values(cartData).forEach((data: ICartData) => {
           total = total + data.price * data.quantity;

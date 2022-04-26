@@ -6,7 +6,6 @@ interface ICart {
 }
 
 export async function addBookToCart(bookToAdd: { [key: string]: any }) {
-  console.log("Inside add book to cart");
   if (FIREBASE_AUTH.currentUser?.uid) {
     const cartDoc = doc(
       FIREBASE_DB,
@@ -14,14 +13,10 @@ export async function addBookToCart(bookToAdd: { [key: string]: any }) {
       FIREBASE_AUTH.currentUser?.uid as string
     );
     const cartRef = await getDoc(cartDoc);
-    console.log(cartRef.data());
     const cartData = cartRef.data() as ICart;
     let items = {} as ICart;
     if (cartData) {
-      console.log({ cartData });
-      console.log(typeof cartData);
       const itemKeys = Object.keys(cartData);
-      console.log({ itemKeys });
       items = cartData;
       if (Object.keys(cartData).includes(bookToAdd.isbn)) {
         items[bookToAdd.isbn]["quantity"] =
@@ -38,7 +33,6 @@ export async function addBookToCart(bookToAdd: { [key: string]: any }) {
 }
 
 export async function fetchCartDetails(userId: string): Promise<any> {
-  console.log("Fetching carts for user");
   const cartDoc = doc(FIREBASE_DB, "Cart", userId);
   return (await getDoc(cartDoc)).data();
 }
@@ -50,10 +44,30 @@ export async function updateCartQuantity(
 ): Promise<any> {
   const cartDoc = doc(FIREBASE_DB, "Cart", userId);
   const cartRef = await getDoc(cartDoc);
-  console.log(cartRef.data());
   const cartData = cartRef.data() as ICart;
   if (Object.keys(cartData).includes(isbn)) {
     cartData[isbn]["quantity"] = newQuantity;
     await updateDoc(cartDoc, cartData);
+  }
+}
+
+export async function deleteCartItem(userId: string, isbn: string) {
+  try {
+    const cartDoc = doc(FIREBASE_DB, "Cart", userId);
+    const cartRef = await getDoc(cartDoc);
+    const cartData = cartRef.data() as ICart;
+    console.log(cartRef.data());
+    console.log(cartRef.exists);
+    console.log(cartData);
+    console.log(Object.keys(cartData));
+    console.log(Object.keys(cartData).includes(isbn));
+    if (Object.keys(cartData).includes(isbn)) {
+      const newData = cartData;
+      delete newData[isbn];
+      console.log(newData);
+      await setDoc(cartDoc, newData);
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
