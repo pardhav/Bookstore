@@ -14,7 +14,6 @@ import { Layout, SignupSchema } from "@/components";
 import { useFormik } from "formik";
 import { createUserWithEmail } from "@/modules";
 import React from "react";
-import { route } from "next/dist/server/router";
 import { useRouter } from "next/router";
 
 //TODO: Add validations to password, mobile number
@@ -31,19 +30,19 @@ function SignUp() {
       password: "",
       email: "",
       "tel-national": "",
+      "street-address": "",
+      line2: "",
+      "address-level2": "",
+      state: "",
+      "postal-code": "",
     },
     validationSchema: SignupSchema,
     onSubmit: async (values, actions) => {
+      console.log("Form Submitting");
       try {
         actions.setSubmitting(true);
         setSubmitting(true);
-        let user = await createUserWithEmail(
-          values.email,
-          values.password,
-          values["family-name"],
-          values["given-name"],
-          values["tel-national"]
-        );
+        let user = await createUserWithEmail(values.password, values);
         if (user) {
           toast({
             status: "success",
@@ -51,9 +50,8 @@ function SignUp() {
             title: "Account Created!",
             description: `Welcome to NECT Family, ${user.displayName}`,
           });
-          router.push('/')
+          router.push("/");
         }
-        
       } catch (error: any) {
         console.error(error);
         toast({
@@ -205,6 +203,121 @@ function SignUp() {
               />
               <FormErrorMessage>
                 {formik.errors["tel-national"]}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl
+              isRequired
+              isInvalid={
+                formik.errors["street-address"] !== undefined &&
+                formik.errors["street-address"] !== null &&
+                formik.errors["street-address"] !== "" &&
+                formik.touched["street-address"]
+              }
+              m="3"
+            >
+              <FormLabel htmlFor="number">Street</FormLabel>
+              <Input
+                onBlur={formik.handleBlur}
+                id="street-address"
+                type="text"
+                name="street-address"
+                value={formik.values["street-address"]}
+                placeholder="Enter your street"
+                onChange={formik.handleChange}
+              />
+              <FormErrorMessage>
+                {formik.errors["street-address"]}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl
+              isInvalid={
+                formik.errors["line2"] !== undefined &&
+                formik.errors["line2"] !== null &&
+                formik.errors["line2"] !== "" &&
+                formik.touched["line2"]
+              }
+              m="3"
+            >
+              <FormLabel htmlFor="number">Unit/Apt No</FormLabel>
+              <Input
+                onBlur={formik.handleBlur}
+                id="line2"
+                type="tel"
+                name="line2"
+                value={formik.values["line2"]}
+                placeholder="Enter your Unit/Apt No"
+                onChange={formik.handleChange}
+              />
+              <FormErrorMessage>{formik.errors["line2"]}</FormErrorMessage>
+            </FormControl>
+            <FormControl
+              isRequired
+              isInvalid={
+                formik.errors["address-level2"] !== undefined &&
+                formik.errors["address-level2"] !== null &&
+                formik.errors["address-level2"] !== "" &&
+                formik.touched["address-level2"]
+              }
+              m="3"
+            >
+              <FormLabel htmlFor="number">City</FormLabel>
+              <Input
+                onBlur={formik.handleBlur}
+                id="address-level2"
+                type="text"
+                name="address-level2"
+                value={formik.values["address-level2"]}
+                placeholder="Enter your City"
+                onChange={formik.handleChange}
+              />
+              <FormErrorMessage>
+                {formik.errors["address-level2"]}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl
+              isRequired
+              isInvalid={
+                formik.errors["state"] !== undefined &&
+                formik.errors["state"] !== null &&
+                formik.errors["state"] !== "" &&
+                formik.touched["state"]
+              }
+              m="3"
+            >
+              <FormLabel htmlFor="number">State</FormLabel>
+              <Input
+                onBlur={formik.handleBlur}
+                id="state"
+                type="text"
+                name="state"
+                value={formik.values["state"]}
+                placeholder="Enter your State"
+                onChange={formik.handleChange}
+              />
+              <FormErrorMessage>{formik.errors["state"]}</FormErrorMessage>
+            </FormControl>
+            <FormControl
+              isRequired
+              isInvalid={
+                formik.errors["postal-code"] !== undefined &&
+                formik.errors["postal-code"] !== null &&
+                formik.errors["postal-code"] !== "" &&
+                formik.touched["postal-code"]
+              }
+              m="3"
+            >
+              <FormLabel htmlFor="number">Zip/Postal Code</FormLabel>
+              <Input
+                onBlur={formik.handleBlur}
+                id="postal-code"
+                type="text"
+                name="postal-code"
+                value={formik.values["postal-code"]}
+                placeholder="XXXXX"
+                onChange={formik.handleChange}
+              />
+              <FormErrorMessage>
+                {formik.errors["postal-code"]}
               </FormErrorMessage>
             </FormControl>
 

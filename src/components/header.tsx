@@ -98,7 +98,12 @@ const Header = React.memo((props) => {
                   >
                     My Orders
                   </MenuItem>
-                  <MenuItem icon={<BsInfoCircle />}>About</MenuItem>
+                  <MenuItem
+                    icon={<BsInfoCircle />}
+                    onClick={() => router.push("/about")}
+                  >
+                    About
+                  </MenuItem>
                   <MenuDivider />
                   <MenuItem
                     onClick={async () => {

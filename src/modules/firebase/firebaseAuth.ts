@@ -12,12 +12,10 @@ import { FIREBASE_DB, FIREBASE_AUTH } from "./clientApp";
 
 // TODO: persist user token after login
 export async function createUserWithEmail(
-  email: string,
   password: string,
-  firstName: string,
-  lastName: string,
-  mobile: string
+  values: any
 ): Promise<User | null> {
+  const { email } = values;
   await setPersistence(FIREBASE_AUTH, browserLocalPersistence);
   const user = await createUserWithEmailAndPassword(
     FIREBASE_AUTH,
@@ -26,14 +24,18 @@ export async function createUserWithEmail(
   );
   if (user) {
     await updateProfile(user.user, {
-      displayName: `${firstName} ${lastName}`,
+      displayName: `${values["given-name"]} ${values["family-name"]}`,
     });
     await setDoc(doc(FIREBASE_DB, "Users", email), {
       userId: user.user.uid,
+      firstName: values["given-name"],
+      lastName: values["family-name"],
+      mobile: values["tel-national"],
+      postalCode: values["postal-code"],
+      unitNo: values["line2"],
+      city: values["address-level2"],
+      street: values["street-address"],
       email,
-      firstName,
-      lastName,
-      mobile,
     });
     //TODO: write trigger to crate these docs
     await addDoc(collection(FIREBASE_DB, "Cart"), {

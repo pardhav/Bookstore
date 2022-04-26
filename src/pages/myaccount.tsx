@@ -259,12 +259,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       const userRef = FIREBASE_ADMIN.firestore()
         .collection("Users")
         .doc(email as string);
-      const userData = (await userRef.get()).data() as IFormValues;
-      console.log("Getting user data");
-      console.log({ userData });
-      return {
-        props: userData,
-      };
+      const userRecord = await userRef.get();
+      if (userRecord.exists) {
+        const userData = userRecord.data() as IFormValues;
+        return { props: userData };
+      } else {
+        // return if user record is not found
+        ctx.res.writeHead(302, { Location: "/login" });
+        ctx.res.end();
+      }
     } else {
       // return if user is not authenticated
       ctx.res.writeHead(302, { Location: "/login" });
