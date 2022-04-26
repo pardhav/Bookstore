@@ -258,7 +258,7 @@ function Detail(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                     <PaypalButtons
                       amount={mainTotal}
                       userInfo={userInfo}
-                      amounts
+                      amounts={amounts}
                     />
                   </Box>
                 </Box>
