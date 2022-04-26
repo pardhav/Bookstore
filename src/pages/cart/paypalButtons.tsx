@@ -6,11 +6,10 @@ import {
 } from "@paypal/react-paypal-js";
 import { IFormValues } from "./detail";
 import { createTransaction } from "modules/firebase/transactionServices";
+import { useRouter } from "next/router";
 
 // This values are the props in the UI
 const style = { label: "paypal", layout: "vertical" };
-// const amount = "2";
-
 interface IPaypalButtons {
   amount: string;
   userInfo: IFormValues;
@@ -19,7 +18,7 @@ interface IPaypalButtons {
 export default function PaypalButtons(props: IPaypalButtons) {
   const { amount, userInfo, amounts } = props;
   const [clientToken, setClientToken] = useState(null);
-
+  const router = useRouter();
   useEffect(() => {
     (async () => {
       const response = await (
@@ -70,7 +69,6 @@ export default function PaypalButtons(props: IPaypalButtons) {
                     },
                   })
                   .then((orderId) => {
-                    // Your code here after create the order
                     return orderId;
                   });
               }}
@@ -80,7 +78,7 @@ export default function PaypalButtons(props: IPaypalButtons) {
                   .then(async (payload) => {
                     // Your code here after capture the order
                     await createTransaction(payload, userInfo.userId, amounts);
-                    console.log(JSON.stringify(payload));
+                    router.push("/myorders");
                   });
               }}
             />

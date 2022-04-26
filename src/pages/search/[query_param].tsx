@@ -54,6 +54,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     console.error({ err });
     // redirect to the home page on error
     ctx.res.writeHead(302, { Location: "/" });
+    ctx.res.write({ err });
     ctx.res.end();
 
     // `as never` prevents inference issues
